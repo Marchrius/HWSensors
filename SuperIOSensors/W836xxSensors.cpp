@@ -48,7 +48,7 @@
 
 #include "W836xxSensors.h"
 #include "FakeSMCDefinitions.h"
-#include "SuperIO.h"
+#include "SuperIODevice.h"
 
 #define super LPCSensors
 OSDefineMetaClassAndStructors(W836xxSensors, LPCSensors)
@@ -222,6 +222,44 @@ float W836xxSensors::readTachometer(UInt32 index)
 	return fanValue[index];
 }
 
+bool W836xxSensors::isTachometerControlable()
+{
+    return true;
+}
+
+UInt8 W836xxSensors::readTachometerControl(UInt32 index)
+{
+    UInt8 control = readByte(WINBOND_FAN_PWM_OUTPUT[index]);
+
+    if (model == W83687THF) {
+        return (float)(control >> 8) / 1.27f;
+    }
+
+    return (float)(control) / 2.55f;
+}
+
+void W836xxSensors::writeTachometerControl(UInt32 index, UInt8 percent)
+{
+    if (index < 4) {
+        
+        if (!fanControlEnabled[index]) {
+            // Enable manual fan control
+            UInt8 reg = readByte(WINBOND_FAN_PWM_ENABLE[index]);
+            reg &= ~(0x03 << WINBOND_FAN_PWM_ENABLE_SHIFT[index]);
+            // 0 - set to Manual mode
+            reg |= 0 << WINBOND_FAN_PWM_ENABLE_SHIFT[index];
+            
+            writeByte(WINBOND_FAN_PWM_ENABLE[index], reg);
+            
+            fanControlEnabled[index] = true;
+        }
+        
+        
+        writeByte(WINBOND_FAN_PWM_OUTPUT[index], (float)(percent) * (model == W83687THF ? 1.27f : 2.55f));
+        
+    }
+}
+
 bool W836xxSensors::addTemperatureSensors(OSDictionary *configuration)
 {
     HWSensorsDebugLog("adding temperature sensors...");
@@ -262,7 +300,7 @@ bool W836xxSensors::addTemperatureSensors(OSDictionary *configuration)
         snprintf(key, 8, "TEMPIN%X", index++);
         
         if (OSObject *node = configuration->getObject(key))
-            if (addSensor(node, kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, i))
+            if (addSensorFromNode(node, kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, i))
                 break;
     }
     

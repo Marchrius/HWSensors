@@ -26,38 +26,31 @@
  *
  */
 
-#import <Cocoa/Cocoa.h>
+#import <Sparkle/SUUpdater.h>
+#import <Growl/Growl.h>
 
 #import "PopupController.h"
+#import "PopoverController.h"
 #import "GraphsController.h"
+#import "HWMEngine.h"
 
-#import "HWMonitorIcon.h"
-#import "HWMonitorEngine.h"
-
-@interface AppController : NSWindowController <NSApplicationDelegate, NSTableViewDataSource, NSTableViewDelegate, PopupControllerDelegate, NSTokenFieldDelegate>
+@interface AppController : NSWindowController <NSApplicationDelegate, NSTableViewDataSource, NSTableViewDelegate, PopupControllerDelegate, HWMEngineDelegate, GrowlApplicationBridgeDelegate, NSPopoverDelegate>
 {
-    HWMonitorEngine *_engine;
-    NSMutableDictionary *_icons;
-    NSMutableArray* _favorites;
-    NSMutableArray *_groups;
-    NSMutableDictionary *_items;
-    NSMutableArray *_ordering;
-    
-    float _smcSensorsUpdateInterval;
-    float _smartSensorsUpdateInterval;
-    NSDate *_favoritesSensorsLastUpdated;
-    NSDate *_smcSensorsLastUpdated;
-    NSDate *_smartSensorsLastUpdated;
-    BOOL _scheduleRebuildSensors;
-    
-    NSArray *_colorThemes;
+    NSView *_previousView;
 }
 
-@property (assign) IBOutlet PopupController *popupController;
-@property (assign) IBOutlet GraphsController *graphsController;
+@property (readonly) IBOutlet HWMEngine *monitorEngine;
 
-@property (assign) IBOutlet NSTextField *smcUpdateRateTextField;
-@property (assign) IBOutlet NSTextField *smartUpdateRateTextField;
+@property (nonatomic, strong) IBOutlet NSMutableArray *themePreview;
+@property (nonatomic, strong) IBOutlet NSMutableIndexSet *themeSelectionIndexes;
+
+@property (nonatomic, strong) IBOutlet NSMutableArray *drivePreview;
+@property (nonatomic, strong) IBOutlet NSMutableIndexSet *driveSelectionIndexes;
+
+@property (assign) IBOutlet PopupController *popupController;
+@property (assign) IBOutlet PopoverController *popoverController;
+@property (assign) IBOutlet GraphsController *graphsController;
+@property (assign) IBOutlet SUUpdater *sharedUpdater;
 
 @property (assign) IBOutlet NSTableView *favoritesTableView;
 @property (assign) IBOutlet NSTableView *sensorsTableView;
@@ -65,18 +58,10 @@
 @property (readonly) BOOL hasDraggedFavoriteItem;
 @property (atomic, assign) NSDragOperation currentItemDragOperation;
 
-- (IBAction)favoritesChanged:(id)sender;
-- (IBAction)useFahrenheitChanged:(id)sender;
-- (IBAction)colorThemeChanged:(id)sender;
-- (IBAction)updateRateChanged:(id)sender;
-- (IBAction)toggleSensorVisibility:(id)sender;
-- (IBAction)useBigFontChanged:(id)sender;
-- (IBAction)useShadowEffectChanged:(id)sender;
-- (IBAction)useBSDNamesChanged:(id)sender;
-- (IBAction)showVolumeNamesChanged:(id)sender;
-- (IBAction)toggleGraphSmoothing:(id)sender;
-- (IBAction)graphsBackgroundMonitorChanged:(id)sender;
-- (IBAction)graphsWindowTopmostChanged:(id)sender;
-- (IBAction)graphsScaleChanged:(id)sender;
+@property (readonly) NSArray *sensorsAndGroupsCollectionSnapshot;
+@property (readonly) NSArray *favoritesCollectionSnapshot;
+
+- (IBAction)checkForUpdates:(id)sender;
+- (IBAction)rebuildSensorsList:(id)sender;
 
 @end

@@ -19,8 +19,9 @@ private:
     radeon_device       card;
     
 protected:	
-    virtual float       getSensorValue(FakeSMCSensor *sensor);
+    virtual bool        willReadSensorValue(FakeSMCSensor *sensor, float* value);
     virtual bool        shouldWaitForAccelerator();
+    virtual bool        probIsAcceleratorAlreadyLoaded();
 	virtual bool        managedStart(IOService *provider);
     
 public:

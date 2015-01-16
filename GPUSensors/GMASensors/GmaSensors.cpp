@@ -36,7 +36,7 @@
 #define super GPUSensors
 OSDefineMetaClassAndStructors(GmaSensors, GPUSensors)
 
-float GmaSensors::getSensorValue(FakeSMCSensor *sensor)
+bool GmaSensors::willReadSensorValue(FakeSMCSensor *sensor, float *outValue)
 {    
     if (sensor->getGroup() == kFakeSMCTemperatureSensor) {
         short value = 0;
@@ -57,10 +57,10 @@ float GmaSensors::getSensorValue(FakeSMCSensor *sensor)
             value = INVID8(TR1);
         }				
         
-        return 150 - value;
+        *outValue = (float)(150 - value);
     }
     
-    return 0;
+    return true;
 }
 
 bool GmaSensors::managedStart(IOService *provider)
@@ -90,9 +90,7 @@ bool GmaSensors::managedStart(IOService *provider)
             return false;
         }
     }
-    
-    enableExclusiveAccessMode();
-    
+
     //Find card number
     gpuIndex = takeVacantGPUIndex();
     
@@ -105,14 +103,12 @@ bool GmaSensors::managedStart(IOService *provider)
     
     snprintf(key, 5, KEY_FORMAT_GPU_PROXIMITY_TEMPERATURE, gpuIndex);
     
-    if (!addSensor(key, TYPE_SP78, 2, kFakeSMCTemperatureSensor, 0)) {
+    if (!addSensorForKey(key, TYPE_SP78, 2, kFakeSMCTemperatureSensor, 0)) {
         HWSensorsFatalLog("failed to register temperature sensor");
         releaseGPUIndex(gpuIndex);
         gpuIndex = -1;
         return false;
     }
-    
-    disableExclusiveAccessMode();
     
     registerService();
     
@@ -121,10 +117,8 @@ bool GmaSensors::managedStart(IOService *provider)
 
 void GmaSensors::stop(IOService* provider)
 {
-    if (gpuIndex >= 0) {
-        if (!releaseGPUIndex(gpuIndex))
-            HWSensorsFatalLog("failed to release GPU index");
-    }
+    if (gpuIndex >= 0)
+        releaseGPUIndex(gpuIndex);
     
     super::stop(provider);
 }

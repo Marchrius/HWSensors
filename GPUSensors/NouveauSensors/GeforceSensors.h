@@ -49,9 +49,14 @@ private:
     int                 i2c_get_fanspeed_rpm(I2CDevPtr dev);
     float               i2c_get_fanspeed_pwm(I2CDevPtr dev);
     int                 i2c_get_fanspeed_mode(I2CDevPtr dev);
-    
+
+    bool                mapMemory(IOService *provider);
+    bool                shadowBios();
 protected:
-    virtual float       getSensorValue(FakeSMCSensor *sensor);
+    virtual bool        willReadSensorValue(FakeSMCSensor *sensor, float* value);
+    virtual bool        shouldWaitForAccelerator();
+    virtual bool        probIsAcceleratorAlreadyLoaded();
+    virtual bool        onStartUp(IOService *provider);
     virtual bool        managedStart(IOService *provider);
     
 public:

@@ -4,6 +4,8 @@
 //
 //  Created by kozlek on 24.08.12.
 //
+//  The MIT License (MIT)
+//
 //  Copyright (c) 2012 Natan Zalkin <natan.zalkin@me.com>. All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of this software
@@ -37,8 +39,8 @@ bool PTIDSensors::updateTemperatures()
     OSObject *object;
     
     if (kIOReturnSuccess == acpiDevice->evaluateObject("TSDD", &object) && object) {
+
         OSSafeRelease(temperatures);
-        
         temperatures = OSDynamicCast(OSArray, object);
         
         //setProperty("temperatures", temperatures);
@@ -56,8 +58,8 @@ bool PTIDSensors::updateTachometers()
     OSObject *object;
     
     if (kIOReturnSuccess == acpiDevice->evaluateObject("OSDD", &object) && object) {
+
         OSSafeRelease(tachometers);
-        
         tachometers = OSDynamicCast(OSArray, object);
         
         //setProperty("tachometers", tachometers);
@@ -108,31 +110,37 @@ float PTIDSensors::readTachometer(UInt32 index)
     return 0;
 }
 
-float PTIDSensors::getSensorValue(FakeSMCSensor *sensor)
+bool PTIDSensors::willReadSensorValue(FakeSMCSensor *sensor, float *outValue)
 {
     switch(sensor->getGroup()) {
         case kFakeSMCTemperatureSensor:
-            return readTemperature(sensor->getIndex());
+            *outValue = readTemperature(sensor->getIndex());
+            break;
+
         case kFakeSMCTachometerSensor:
-            return readTachometer(sensor->getIndex());
+            *outValue = readTachometer(sensor->getIndex());
+            break;
+
+        default:
+            return false;
     }
     
-    return 0;
+    return true;
 }
 
 void PTIDSensors::parseTemperatureName(OSString *name, UInt32 index)
 {
     if (name && readTemperature(index)) {
         if (name->isEqualTo("CPU Core Package DTS") || name->isEqualTo("CPU Package Temperature"))
-            addSensor("CPU Package", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
+            addSensorUsingAbbreviation("CPU Package", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
         else if (name->isEqualTo("CPU Temperature"))
-            addSensor("CPU Proximity", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
+            addSensorUsingAbbreviation("CPU Proximity", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
         else if (name->isEqualTo("PCH Temperature") || name->isEqualTo("PCH DTS Temperature from PCH"))
-            addSensor("PCH Die", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
+            addSensorUsingAbbreviation("PCH Die", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
         else if (name->isEqualTo("MCH DTS Temperature from PCH"))
-            addSensor("MCH Die", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
+            addSensorUsingAbbreviation("MCH Die", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
         else if (name->isEqualTo("Ambient Temperature"))
-            addSensor("Ambient", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
+            addSensorUsingAbbreviation("Ambient", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
         else {
             char str[64];
             
@@ -140,13 +148,13 @@ void PTIDSensors::parseTemperatureName(OSString *name, UInt32 index)
                 
                 snprintf(str, 64, "TS-on-DIMM%X Temperature", i);
                 if (name->isEqualTo(str)) {
-                    addSensor("Memory Module", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
+                    addSensorUsingAbbreviation("Memory Module", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
                     break;
                 }
                 
                 snprintf(str, 64, "Channel %X DIMM Temperature", i);
                 if (name->isEqualTo(str)) {
-                    addSensor("Memory Proximity", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
+                    addSensorUsingAbbreviation("Memory Proximity", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
                     break;
                 }
             }
@@ -156,13 +164,13 @@ void PTIDSensors::parseTemperatureName(OSString *name, UInt32 index)
                 
                 snprintf(str, 64, "TZ0%X _TMP", i);
                 if (name->isEqualTo(str)) {
-                    addSensor("Thermal Zone", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
+                    addSensorUsingAbbreviation("Thermal Zone", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
                     break;
                 }
                 
                 snprintf(str, 64, "CPU Core %X DTS", i);
                 if (name->isEqualTo(str)) {
-                    addSensor("CPU Core", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
+                    addSensorUsingAbbreviation("CPU Core", kFakeSMCCategoryTemperature, kFakeSMCTemperatureSensor, index);
                     break;
                 }
             }
@@ -205,9 +213,7 @@ bool PTIDSensors::start(IOService * provider)
     }
     
     setProperty("version", version, 64);
-    
-    enableExclusiveAccessMode();
-    
+
     // Parse sensors
     switch (version) {
         case 0x30000: {
@@ -276,11 +282,17 @@ bool PTIDSensors::start(IOService * provider)
             break;
     }
     
-    disableExclusiveAccessMode();
-    
     registerService();
     
     HWSensorsInfoLog("started");
     
 	return true;
+}
+
+void PTIDSensors::free()
+{
+    OSSafeRelease(temperatures);
+    OSSafeRelease(tachometers);
+
+    super::free();
 }
