@@ -42,7 +42,7 @@
 #import "HWMIcon.h"
 #import "HWMSensor.h"
 #import "HWMBatterySensor.h"
-
+#import "NSImage+HighResolutionLoading.h"
 #import "NSTableView+HWMEngineHelper.h"
 
 @implementation AppController
@@ -66,7 +66,7 @@
         
         [self.monitorEngine.configuration.colorThemes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             NSString *path = [NSString stringWithFormat:@"theme_%@", [obj name]];
-            NSImage *preview = [NSImage imageNamed:[path lowercaseString]];
+            NSImage *preview = [NSImage loadImageNamed:[path lowercaseString] ofType:@"png"];
             
             [_themePreview addObject:@{@"name"    : GetLocalizedString([obj name]),
                                  @"preview" : preview}];
@@ -158,8 +158,6 @@
 
     [self addObserver:self forKeyPath:@keypath(self, monitorEngine.favorites) options:0 context:nil];
     [self addObserver:self forKeyPath:@keypath(self, monitorEngine.iconsWithSensorsAndGroups) options:0 context:nil];
-
-    [PopupSensorCell setGlobalPopoverDelegate:self];
 }
 
 -(void)showWindow:(id)sender
@@ -378,23 +376,6 @@
 {
     [self.monitorEngine updateSmcAndDeviceSensors];
     [self.monitorEngine updateAtaSmartSensors];
-}
-
-#pragma mark
-#pragma mark PopoverControllerDelegate:
-
--(void)popoverDidShow:(NSNotification *)notification
-{
-    [self.monitorEngine updateSmcAndDeviceSensors];
-    [self.monitorEngine updateAtaSmartSensors];
-}
-
--(void)popoverDidClose:(NSNotification *)notification
-{
-    // If it was sub-popover closed, close also main one if app is not active
-    if (![NSApp isActive] && self.popoverController.isShown && !self.popoverController.isDetached) {
-        [self.popoverController close:self];
-    }
 }
 
 #pragma mark

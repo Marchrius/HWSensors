@@ -27,17 +27,18 @@
 		7E1A031D197F6F560001210A /* PopoverWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E1A031B197F6F560001210A /* PopoverWindowController.xib */; };
 		7E1A0321197F73D10001210A /* SensorsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1A031F197F73D10001210A /* SensorsViewController.m */; };
 		7E1A0322197F73D10001210A /* SensorsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E1A0320197F73D10001210A /* SensorsViewController.xib */; };
-		7E1A0325198053890001210A /* ViewWithToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1A0324198053890001210A /* ViewWithToolbar.m */; };
+		7E1A0325198053890001210A /* PopoverFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1A0324198053890001210A /* PopoverFrameView.m */; };
 		7E1ABD8F185E2CA200412B75 /* Divider.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E1ABD8E185E2CA200412B75 /* Divider.tif */; };
 		7E2042011730844C00C13B65 /* GraphsController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E2042001730844C00C13B65 /* GraphsController.xib */; };
 		7E2042031730CDA000C13B65 /* PopupController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E2042021730CDA000C13B65 /* PopupController.xib */; };
 		7E2042051730D04100C13B65 /* AppController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E2042041730D04000C13B65 /* AppController.xib */; };
 		7E268C621837A41C004F16E3 /* HWMIcon.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E268C611837A41C004F16E3 /* HWMIcon.m */; };
 		7E2789801876FB6300B443BD /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E27897F1876FB6300B443BD /* Growl.framework */; };
-		7E2789811876FB6E00B443BD /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E27897F1876FB6300B443BD /* Growl.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		7E2789811876FB6E00B443BD /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7E27897F1876FB6300B443BD /* Growl.framework */; };
 		7E28ED5F1979CBDC00788C40 /* PopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E28ED5E1979CBDC00788C40 /* PopoverController.m */; };
 		7E2DEA1D18C467B900D97F89 /* HWMSmcFanControlLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2DEA1C18C467B900D97F89 /* HWMSmcFanControlLevel.m */; };
 		7E2DEA2018C467DC00D97F89 /* HWMSmcFanController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2DEA1F18C467DC00D97F89 /* HWMSmcFanController.m */; };
+		7E2EFB3F1B4F25C8004ABDC2 /* NSWindow+ULIZoomEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2EFB3E1B4F25C8004ABDC2 /* NSWindow+ULIZoomEffect.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7E309FCE18C3167B001033A1 /* PopupLevelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E309FCD18C3167B001033A1 /* PopupLevelCell.m */; };
 		7E36E59A188AB25A00BD9744 /* NSImage+HighResolutionLoading.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E36E599188AB25A00BD9744 /* NSImage+HighResolutionLoading.m */; };
 		7E3A93121848A8A70097F83E /* HWMEngine.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7E3A93101848A8A70097F83E /* HWMEngine.xcdatamodeld */; };
@@ -62,7 +63,9 @@
 		7E7B9B3F1786A732003ACB61 /* OBMenuBarWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7B9B3E1786A732003ACB61 /* OBMenuBarWindow.m */; };
 		7E7C14A71982432300BF3046 /* PopoverWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7C14A61982432300BF3046 /* PopoverWindow.m */; };
 		7E7D61FB1704453B00F7222F /* FadingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7D61FA1704453B00F7222F /* FadingButton.m */; };
+		7E7D86EA1B4454AE008AE77B /* OBMenuBarWindowFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7D86E91B4454AE008AE77B /* OBMenuBarWindowFrameView.m */; };
 		7E8A337518EEEC510059DA16 /* HWMThemedTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8A337418EEEC510059DA16 /* HWMThemedTextField.m */; };
+		7E8B050C1B4AEE6500861A5E /* PopoverWindowFrameView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E8B050B1B4AEE6500861A5E /* PopoverWindowFrameView.m */; };
 		7E9060E51708951800BF5BBF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA248F016D8E93A002231B2 /* Foundation.framework */; };
 		7E9060E81708951800BF5BBF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E9060E71708951800BF5BBF /* main.m */; };
 		7E9060EC1708951800BF5BBF /* smcutil.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E9060EB1708951800BF5BBF /* smcutil.1 */; };
@@ -79,7 +82,9 @@
 		7EA2494D16D8EB2D002231B2 /* StatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA2494C16D8EB2D002231B2 /* StatusItemView.m */; };
 		7EA2494F16D8EBC1002231B2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA2494E16D8EBC0002231B2 /* IOKit.framework */; };
 		7EA50F0517F3771D00FDA3AA /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA50F0417F3771D00FDA3AA /* Sparkle.framework */; };
-		7EA50F0617F3772500FDA3AA /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EA50F0417F3771D00FDA3AA /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		7EB139FA1B33641E00FBAA04 /* MMScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB139F71B33641E00FBAA04 /* MMScroller.m */; };
+		7EB139FB1B33641E00FBAA04 /* MMScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB139F91B33641E00FBAA04 /* MMScrollView.m */; };
+		7EB139FE1B33646400FBAA04 /* MMDrawingUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EB139FD1B33646400FBAA04 /* MMDrawingUtils.m */; };
 		7EBA20DB17ED9C98008E54C5 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 7EBA20DA17ED9C98008E54C5 /* dsa_pub.pem */; };
 		7EC95E2218D42FCB00DD7B4D /* NSWindow+BackgroundBlur.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EC95E2118D42FCB00DD7B4D /* NSWindow+BackgroundBlur.m */; };
 		7ECDDE4116DEB5F600085FFF /* GraphsGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ECDDE4016DEB5F600085FFF /* GraphsGroupCell.m */; };
@@ -96,9 +101,10 @@
 		7EDA1ACB16D956EA0012A0DC /* GraphsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDA1ACA16D956EA0012A0DC /* GraphsView.m */; };
 		7EDA1AD116DA83AF0012A0DC /* GraphsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDA1AD016DA83AF0012A0DC /* GraphsController.m */; };
 		7EDDC87316FA5DA50072B15B /* Localizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EDDC87216FA5DA50072B15B /* Localizer.m */; };
+		7EE5AFE61BC90D0000AB0EC1 /* Sparkle.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA50F0417F3771D00FDA3AA /* Sparkle.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7EEC9F4418B8D08A00BDB9D7 /* HWMonitorHelper-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7EEC9F4218B8D08A00BDB9D7 /* HWMonitorHelper-Info.plist */; };
 		7EEC9F4518B8D08A00BDB9D7 /* HWMonitorHelper-Launchd.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7EEC9F4318B8D08A00BDB9D7 /* HWMonitorHelper-Launchd.plist */; };
-		7EEC9F4618B8D0F700BDB9D7 /* org.hwsensors.HWMonitorHelper in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7E3299CD18B8D0490022FB53 /* org.hwsensors.HWMonitorHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		7EEC9F4618B8D0F700BDB9D7 /* org.hwsensors.HWMonitorHelper in Copy Helper Binary */ = {isa = PBXBuildFile; fileRef = 7E3299CD18B8D0490022FB53 /* org.hwsensors.HWMonitorHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		7EEC9F4918B8D20600BDB9D7 /* smc.c in Sources */ = {isa = PBXBuildFile; fileRef = 7EF393C1185C8D990033F1AB /* smc.c */; };
 		7EEC9F4A18B8D2E200BDB9D7 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EA2494E16D8EBC0002231B2 /* IOKit.framework */; };
 		7EEC9F4C18B8D73E00BDB9D7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EEC9F4B18B8D73E00BDB9D7 /* main.m */; };
@@ -114,7 +120,7 @@
 		7EFD75B6185C73A300C01C2B /* PopupFanCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EFD75B5185C73A300C01C2B /* PopupFanCell.m */; };
 		7EFD75B8185C763500C01C2B /* PopupFanController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7EFD75B7185C763500C01C2B /* PopupFanController.xib */; };
 		7EFDE527185CA0020022FD66 /* Let's go Digital Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7EFDE526185CA0020022FD66 /* Let's go Digital Regular.ttf */; };
-		7EFDE52A185CA0CF0022FD66 /* Let's go Digital Regular.ttf in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7EFDE526185CA0020022FD66 /* Let's go Digital Regular.ttf */; };
+		7EFDE52A185CA0CF0022FD66 /* Let's go Digital Regular.ttf in Copy Custom Fonts */ = {isa = PBXBuildFile; fileRef = 7EFDE526185CA0020022FD66 /* Let's go Digital Regular.ttf */; };
 		7EFE61AE183581090009BD0D /* HWMBatterySensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EFE61AD183581090009BD0D /* HWMBatterySensor.m */; };
 		7EFE61B1183581090009BD0D /* HWMAtaSmartSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EFE61B0183581090009BD0D /* HWMAtaSmartSensor.m */; };
 		7EFE61B4183581090009BD0D /* HWMSmcSensor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EFE61B3183581090009BD0D /* HWMSmcSensor.m */; };
@@ -185,35 +191,38 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
-		7EBA20D117ED6193008E54C5 /* CopyFiles */ = {
+		7EBA20D117ED6193008E54C5 /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				7E2789811876FB6E00B443BD /* Growl.framework in CopyFiles */,
-				7EA50F0617F3772500FDA3AA /* Sparkle.framework in CopyFiles */,
+				7EE5AFE61BC90D0000AB0EC1 /* Sparkle.framework in Copy Frameworks */,
+				7E2789811876FB6E00B443BD /* Growl.framework in Copy Frameworks */,
 			);
+			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7ECEDD2F18B897A90015AA8C /* CopyFiles */ = {
+		7ECEDD2F18B897A90015AA8C /* Copy Helper Binary */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = Contents/Library/LaunchServices;
 			dstSubfolderSpec = 1;
 			files = (
-				7EEC9F4618B8D0F700BDB9D7 /* org.hwsensors.HWMonitorHelper in CopyFiles */,
+				7EEC9F4618B8D0F700BDB9D7 /* org.hwsensors.HWMonitorHelper in Copy Helper Binary */,
 			);
+			name = "Copy Helper Binary";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7EFDE529185CA0C20022FD66 /* CopyFiles */ = {
+		7EFDE529185CA0C20022FD66 /* Copy Custom Fonts */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = Fonts;
 			dstSubfolderSpec = 7;
 			files = (
-				7EFDE52A185CA0CF0022FD66 /* Let's go Digital Regular.ttf in CopyFiles */,
+				7EFDE52A185CA0CF0022FD66 /* Let's go Digital Regular.ttf in Copy Custom Fonts */,
 			);
+			name = "Copy Custom Fonts";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -260,8 +269,8 @@
 		7E1A031E197F73D10001210A /* SensorsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SensorsViewController.h; sourceTree = "<group>"; };
 		7E1A031F197F73D10001210A /* SensorsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SensorsViewController.m; sourceTree = "<group>"; };
 		7E1A0320197F73D10001210A /* SensorsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SensorsViewController.xib; sourceTree = "<group>"; };
-		7E1A0323198053890001210A /* ViewWithToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewWithToolbar.h; sourceTree = "<group>"; };
-		7E1A0324198053890001210A /* ViewWithToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewWithToolbar.m; sourceTree = "<group>"; };
+		7E1A0323198053890001210A /* PopoverFrameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopoverFrameView.h; sourceTree = "<group>"; };
+		7E1A0324198053890001210A /* PopoverFrameView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopoverFrameView.m; sourceTree = "<group>"; };
 		7E1A8DB91876D1C400853CB6 /* HWMEngine 1.2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "HWMEngine 1.2.xcdatamodel"; sourceTree = "<group>"; };
 		7E1ABD8E185E2CA200412B75 /* Divider.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Divider.tif; sourceTree = "<group>"; };
 		7E2042001730844C00C13B65 /* GraphsController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphsController.xib; sourceTree = "<group>"; };
@@ -278,6 +287,8 @@
 		7E2DEA1C18C467B900D97F89 /* HWMSmcFanControlLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HWMSmcFanControlLevel.m; sourceTree = "<group>"; };
 		7E2DEA1E18C467DC00D97F89 /* HWMSmcFanController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HWMSmcFanController.h; sourceTree = "<group>"; };
 		7E2DEA1F18C467DC00D97F89 /* HWMSmcFanController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HWMSmcFanController.m; sourceTree = "<group>"; };
+		7E2EFB3D1B4F25C2004ABDC2 /* NSWindow+ULIZoomEffect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSWindow+ULIZoomEffect.h"; sourceTree = "<group>"; };
+		7E2EFB3E1B4F25C8004ABDC2 /* NSWindow+ULIZoomEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+ULIZoomEffect.m"; sourceTree = "<group>"; };
 		7E2FE0A3178D18CA00802D38 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7E2FE40518DCB69600EAD6DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		7E309FCC18C3167B001033A1 /* PopupLevelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopupLevelCell.h; sourceTree = "<group>"; };
@@ -328,8 +339,12 @@
 		7E7C14A61982432300BF3046 /* PopoverWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopoverWindow.m; sourceTree = "<group>"; };
 		7E7D61F91704453B00F7222F /* FadingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FadingButton.h; sourceTree = "<group>"; };
 		7E7D61FA1704453B00F7222F /* FadingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FadingButton.m; sourceTree = "<group>"; };
+		7E7D86E81B4454AE008AE77B /* OBMenuBarWindowFrameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBMenuBarWindowFrameView.h; sourceTree = "<group>"; };
+		7E7D86E91B4454AE008AE77B /* OBMenuBarWindowFrameView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBMenuBarWindowFrameView.m; sourceTree = "<group>"; };
 		7E8A337318EEEC510059DA16 /* HWMThemedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HWMThemedTextField.h; sourceTree = "<group>"; };
 		7E8A337418EEEC510059DA16 /* HWMThemedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HWMThemedTextField.m; sourceTree = "<group>"; };
+		7E8B050A1B4AEE6500861A5E /* PopoverWindowFrameView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopoverWindowFrameView.h; sourceTree = "<group>"; };
+		7E8B050B1B4AEE6500861A5E /* PopoverWindowFrameView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopoverWindowFrameView.m; sourceTree = "<group>"; };
 		7E9060E41708951800BF5BBF /* smcutil */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = smcutil; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E9060E71708951800BF5BBF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7E9060EA1708951800BF5BBF /* smcutil-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "smcutil-Prefix.pch"; sourceTree = "<group>"; };
@@ -361,6 +376,12 @@
 		7EA50F0417F3771D00FDA3AA /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = Sparkle/Binaries/Sparkle.framework; sourceTree = "<group>"; };
 		7EA68B8917341ECD00B5B998 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7EA68B8A17341ECD00B5B998 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		7EB139F61B33641E00FBAA04 /* MMScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMScroller.h; sourceTree = "<group>"; };
+		7EB139F71B33641E00FBAA04 /* MMScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMScroller.m; sourceTree = "<group>"; };
+		7EB139F81B33641E00FBAA04 /* MMScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMScrollView.h; sourceTree = "<group>"; };
+		7EB139F91B33641E00FBAA04 /* MMScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMScrollView.m; sourceTree = "<group>"; };
+		7EB139FC1B33646400FBAA04 /* MMDrawingUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMDrawingUtils.h; sourceTree = "<group>"; };
+		7EB139FD1B33646400FBAA04 /* MMDrawingUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MMDrawingUtils.m; sourceTree = "<group>"; };
 		7EB7E702178340710071B3F0 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = Shared/version.h; sourceTree = "<group>"; };
 		7EB7E707178341D20071B3F0 /* HWMonitorVersion.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HWMonitorVersion.pch; path = Shared/HWMonitorVersion.pch; sourceTree = "<group>"; };
 		7EBA20DA17ED9C98008E54C5 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
@@ -536,6 +557,8 @@
 		7E0254661805D2E400B4F099 /* OBMenuBarWindow */ = {
 			isa = PBXGroup;
 			children = (
+				7E7D86E81B4454AE008AE77B /* OBMenuBarWindowFrameView.h */,
+				7E7D86E91B4454AE008AE77B /* OBMenuBarWindowFrameView.m */,
 				7E7B9B3D1786A732003ACB61 /* OBMenuBarWindow.h */,
 				7E7B9B3E1786A732003ACB61 /* OBMenuBarWindow.m */,
 			);
@@ -684,8 +707,8 @@
 		7E1A3643198B5C670052B673 /* PopoverController */ = {
 			isa = PBXGroup;
 			children = (
-				7E1A0323198053890001210A /* ViewWithToolbar.h */,
-				7E1A0324198053890001210A /* ViewWithToolbar.m */,
+				7E1A0323198053890001210A /* PopoverFrameView.h */,
+				7E1A0324198053890001210A /* PopoverFrameView.m */,
 				7E28ED5D1979CBDC00788C40 /* PopoverController.h */,
 				7E28ED5E1979CBDC00788C40 /* PopoverController.m */,
 				7E1A0312197F6B4A0001210A /* PopoverController.xib */,
@@ -696,6 +719,8 @@
 		7E1A3644198B5C750052B673 /* PopoverWindowController */ = {
 			isa = PBXGroup;
 			children = (
+				7E8B050A1B4AEE6500861A5E /* PopoverWindowFrameView.h */,
+				7E8B050B1B4AEE6500861A5E /* PopoverWindowFrameView.m */,
 				7E7C14A51982432300BF3046 /* PopoverWindow.h */,
 				7E7C14A61982432300BF3046 /* PopoverWindow.m */,
 				7E1A0319197F6F560001210A /* PopoverWindowController.h */,
@@ -746,9 +771,9 @@
 			children = (
 				7E2FE40F18DCBA5400EAD6DB /* Sparkle.framework */,
 				7E2FE41118DCBA5400EAD6DB /* Sparkle Test App.app */,
-				7E2FE41318DCBA5400EAD6DB /* Sparkle Unit Tests.octest */,
+				7E2FE41318DCBA5400EAD6DB /* Sparkle Unit Tests.xctest */,
 				7E2FE41518DCBA5400EAD6DB /* BinaryDelta */,
-				7E2FE41718DCBA5400EAD6DB /* Sparkle Updater.app */,
+				7E2FE41718DCBA5400EAD6DB /* Autoupdate.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -816,6 +841,8 @@
 				7E9A17CF17E45938003DB018 /* NSPopover+Message.m */,
 				7EC95E2018D42FCB00DD7B4D /* NSWindow+BackgroundBlur.h */,
 				7EC95E2118D42FCB00DD7B4D /* NSWindow+BackgroundBlur.m */,
+				7E2EFB3D1B4F25C2004ABDC2 /* NSWindow+ULIZoomEffect.h */,
+				7E2EFB3E1B4F25C8004ABDC2 /* NSWindow+ULIZoomEffect.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -861,6 +888,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		7E989C6C1B41CDAA00F75033 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				7EDDC87116FA5DA50072B15B /* Localizer.h */,
+				7EDDC87216FA5DA50072B15B /* Localizer.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
 		7EA248DF16D8E93A002231B2 = {
 			isa = PBXGroup;
 			children = (
@@ -898,6 +934,7 @@
 			children = (
 				7EA2493A16D8EA95002231B2 /* HWMonitorDefinitions.h */,
 				7E4C76B418A574F20050BEFD /* Categories */,
+				7E989C6C1B41CDAA00F75033 /* Classes */,
 				7EA2490A16D8E9B0002231B2 /* HWMEngine */,
 				7EA2490916D8E9A7002231B2 /* Controllers */,
 				7ECDDE3E16DDF19A00085FFF /* User Interface */,
@@ -934,8 +971,6 @@
 		7EA2490916D8E9A7002231B2 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				7EDDC87116FA5DA50072B15B /* Localizer.h */,
-				7EDDC87216FA5DA50072B15B /* Localizer.m */,
 				7E0648F216DF3B8300ACB851 /* LaunchAtLoginController */,
 				7EF2A1041730532D00D8641C /* App and Prefs Window Controller */,
 				7EF2A1031730519600D8641C /* Popup Panel Controller */,
@@ -963,12 +998,26 @@
 		7EA2494A16D8EB0B002231B2 /* Views & Controls */ = {
 			isa = PBXGroup;
 			children = (
+				7EB139EF1B3363EB00FBAA04 /* MMScrollView */,
 				7E0200AC18035D3700520CF7 /* RFOverlayScrollView */,
 				7E0254651805D2D200B4F099 /* JLNFadingScrollView */,
 				7E019BA7182625F8002F8217 /* FadingButton */,
 				7E019BA6182625EC002F8217 /* SensorsTableView */,
 			);
 			name = "Views & Controls";
+			sourceTree = "<group>";
+		};
+		7EB139EF1B3363EB00FBAA04 /* MMScrollView */ = {
+			isa = PBXGroup;
+			children = (
+				7EB139FC1B33646400FBAA04 /* MMDrawingUtils.h */,
+				7EB139FD1B33646400FBAA04 /* MMDrawingUtils.m */,
+				7EB139F61B33641E00FBAA04 /* MMScroller.h */,
+				7EB139F71B33641E00FBAA04 /* MMScroller.m */,
+				7EB139F81B33641E00FBAA04 /* MMScrollView.h */,
+				7EB139F91B33641E00FBAA04 /* MMScrollView.m */,
+			);
+			name = MMScrollView;
 			sourceTree = "<group>";
 		};
 		7EB7E708178341D80071B3F0 /* Versioning */ = {
@@ -1104,9 +1153,10 @@
 				7EA248E416D8E93A002231B2 /* Sources */,
 				7EA248E516D8E93A002231B2 /* Frameworks */,
 				7EA248E616D8E93A002231B2 /* Resources */,
-				7EBA20D117ED6193008E54C5 /* CopyFiles */,
-				7EFDE529185CA0C20022FD66 /* CopyFiles */,
-				7ECEDD2F18B897A90015AA8C /* CopyFiles */,
+				7EBA20D117ED6193008E54C5 /* Copy Frameworks */,
+				7EFDE529185CA0C20022FD66 /* Copy Custom Fonts */,
+				7ECEDD2F18B897A90015AA8C /* Copy Helper Binary */,
+				7EE5AFE71BC90FB400AB0EC1 /* Add Sparkle Updater URL */,
 			);
 			buildRules = (
 			);
@@ -1125,7 +1175,7 @@
 		7EA248E016D8E93A002231B2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = kozlek;
 				TargetAttributes = {
 					7EA248E716D8E93A002231B2 = {
@@ -1188,10 +1238,10 @@
 			remoteRef = 7E2FE41018DCBA5400EAD6DB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7E2FE41318DCBA5400EAD6DB /* Sparkle Unit Tests.octest */ = {
+		7E2FE41318DCBA5400EAD6DB /* Sparkle Unit Tests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = "Sparkle Unit Tests.octest";
+			path = "Sparkle Unit Tests.xctest";
 			remoteRef = 7E2FE41218DCBA5400EAD6DB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1202,10 +1252,10 @@
 			remoteRef = 7E2FE41418DCBA5400EAD6DB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7E2FE41718DCBA5400EAD6DB /* Sparkle Updater.app */ = {
+		7E2FE41718DCBA5400EAD6DB /* Autoupdate.app */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.application;
-			path = "Sparkle Updater.app";
+			path = Autoupdate.app;
 			remoteRef = 7E2FE41618DCBA5400EAD6DB /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -1243,6 +1293,23 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		7EE5AFE71BC90FB400AB0EC1 /* Add Sparkle Updater URL */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Add Sparkle Updater URL";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/libexec/PlistBuddy -c \"Add :SUFeedURL string http://hwsensors.com/appcast/appcast.xml\" \"./Binaries/HWMonitor.app/Contents/info.plist\"\nexit 0";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		7E3299C918B8D0490022FB53 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -1272,7 +1339,7 @@
 				7EFD75B6185C73A300C01C2B /* PopupFanCell.m in Sources */,
 				7EA248F816D8E93A002231B2 /* main.m in Sources */,
 				7EC95E2218D42FCB00DD7B4D /* NSWindow+BackgroundBlur.m in Sources */,
-				7E1A0325198053890001210A /* ViewWithToolbar.m in Sources */,
+				7E1A0325198053890001210A /* PopoverFrameView.m in Sources */,
 				7E2DEA1D18C467B900D97F89 /* HWMSmcFanControlLevel.m in Sources */,
 				7E1900B0184279CD00C6A0E8 /* HWMGraph.m in Sources */,
 				7E713BF218FD1B2D009E6EA5 /* NSString+returnCodeDescription.m in Sources */,
@@ -1288,6 +1355,7 @@
 				7EA2494D16D8EB2D002231B2 /* StatusItemView.m in Sources */,
 				7E6AEF6E18C9A4E800AD0CBC /* PopupAtaStateCell.m in Sources */,
 				7EFE61B4183581090009BD0D /* HWMSmcSensor.m in Sources */,
+				7E2EFB3F1B4F25C8004ABDC2 /* NSWindow+ULIZoomEffect.m in Sources */,
 				7EFF4395183649B20094860C /* HWMEngine.m in Sources */,
 				7EDA1A6D16D901100012A0DC /* PopupController.m in Sources */,
 				7EF393C2185C8D990033F1AB /* smc.c in Sources */,
@@ -1296,6 +1364,7 @@
 				7E1A031C197F6F560001210A /* PopoverWindowController.m in Sources */,
 				7EDA1A7916D903740012A0DC /* PopupSensorCell.m in Sources */,
 				7E48BC6518EE977500A6CA19 /* SmcHelper+HWMonitorHelper.m in Sources */,
+				7EB139FB1B33641E00FBAA04 /* MMScrollView.m in Sources */,
 				7E4C76BA18A61C190050BEFD /* NSTableHeaderCell+PopupThemedHeader.m in Sources */,
 				7E8A337518EEEC510059DA16 /* HWMThemedTextField.m in Sources */,
 				7E48B3CC18BE5A0E00B6B734 /* SmcHelper.m in Sources */,
@@ -1307,12 +1376,14 @@
 				7ED3004F1802895E0020D818 /* JLNFadingScrollView.m in Sources */,
 				7ECDDE4116DEB5F600085FFF /* GraphsGroupCell.m in Sources */,
 				7ED6AE08188347FD0005B30C /* PrefsToolbarItem.m in Sources */,
+				7EB139FA1B33641E00FBAA04 /* MMScroller.m in Sources */,
 				7E031C641835E76D00A2D097 /* HWMImageTransformer.m in Sources */,
 				7EF1B12C185342890094C1DB /* HWMConfiguration.m in Sources */,
 				7EFE61AE183581090009BD0D /* HWMBatterySensor.m in Sources */,
 				7E0648F016DF3B7D00ACB851 /* LaunchAtLoginController.m in Sources */,
 				7E268C621837A41C004F16E3 /* HWMIcon.m in Sources */,
 				7E19DEBE1843CDC400229B0E /* HWMSensorsGroup.m in Sources */,
+				7E7D86EA1B4454AE008AE77B /* OBMenuBarWindowFrameView.m in Sources */,
 				7E17953616EE705B00145082 /* PopupBatteryCell.m in Sources */,
 				7EDDC87316FA5DA50072B15B /* Localizer.m in Sources */,
 				7E1A0321197F73D10001210A /* SensorsViewController.m in Sources */,
@@ -1334,8 +1405,10 @@
 				7E9FF2CA185330BC009DAD0D /* HWMItem.m in Sources */,
 				7E7B9B3F1786A732003ACB61 /* OBMenuBarWindow.m in Sources */,
 				7E9A17CD17E4529C003DB018 /* PopupAtaSmartSensorCell.m in Sources */,
+				7E8B050C1B4AEE6500861A5E /* PopoverWindowFrameView.m in Sources */,
 				7E9A17D017E45938003DB018 /* NSPopover+Message.m in Sources */,
 				7E04D7B518B33E5600B40ADA /* ProbeControllingMenuItem.m in Sources */,
+				7EB139FE1B33646400FBAA04 /* MMDrawingUtils.m in Sources */,
 				7E9A17D317E45ACA003DB018 /* NSString+Size.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1503,7 +1576,7 @@
 				INFOPLIST_PREPROCESS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -1538,13 +1611,14 @@
 				INFOPLIST_PREFIX_HEADER = Shared/HWMonitorVersion.pch;
 				INFOPLIST_PREPROCESS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		7EA2490616D8E93A002231B2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SOURCE_ROOT)",
 					"$(SOURCE_ROOT)/Sparkle/Binaries/",
@@ -1555,6 +1629,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HWMonitor/HWMonitor-Prefix.pch";
 				INFOPLIST_FILE = "HWMonitor/HWMonitor-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGET_DIR = HWMonitor;
 				WRAPPER_EXTENSION = app;
@@ -1564,6 +1640,7 @@
 		7EA2490716D8E93A002231B2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SOURCE_ROOT)",
 					"$(SOURCE_ROOT)/Sparkle/Binaries/",
@@ -1574,6 +1651,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HWMonitor/HWMonitor-Prefix.pch";
 				INFOPLIST_FILE = "HWMonitor/HWMonitor-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGET_DIR = HWMonitor;
 				WRAPPER_EXTENSION = app;
