@@ -13,57 +13,75 @@
 #define super FakeSMCPlugin
 OSDefineMetaClassAndStructors(GPUSensors, FakeSMCPlugin)
 
-#define releaseTimerEventSource \
-if (timerEventSource) { \
-timerEventSource->cancelTimeout(); \
-workloop->removeEventSource(timerEventSource); \
-timerEventSource = NULL; \
+#define releaseTimerEventSource(timer) \
+if (timer) { \
+timer->cancelTimeout(); \
+workloop->removeEventSource(timer); \
+timer = NULL; \
 }
 
-#define kGPUSensorsAcceleratorWaitCycle     300
+#define kGPUSensorsAcceleratorWaitCycle     1000.0f
+#define kGPUSensorsAcceleratorDelayTime     5000
 
 IOReturn GPUSensors::probeEvent()
 {
     HWSensorsDebugLog("Probe event...");
-    
-    bool acceleratorFound = false;
-    
-    if (OSDictionary *matching = serviceMatching("IOAccelerator")) {
-        if (OSIterator *iterator = getMatchingServices(matching)) {
-            while (IOService *service = (IOService*)iterator->getNextObject()) {
-                if (pciDevice == service->getParentEntry(gIOServicePlane)) {
-                    acceleratorFound = true;
-                    break;
-                }
-            }
-            
-            OSSafeRelease(iterator);
+
+    if (probIsAcceleratorAlreadyLoaded()) {
+        releaseTimerEventSource(timerEventSource);
+
+        if (!(timerEventSource = IOTimerEventSource::timerEventSource( this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &GPUSensors::delayedStartEvent)))) {
+            HWSensorsFatalLog("failed to initialize delayed startup timer event source");
+            return false;
         }
-        
-        OSSafeRelease(matching);
+
+        if (kIOReturnSuccess != workloop->addEventSource(timerEventSource))
+        {
+            HWSensorsFatalLog("failed to add delayed startup timer event source into workloop");
+            timerEventSource->release();
+            return false;
+        }
+
+        // Wait a little before start
+        timerEventSource->setTimeoutMS(kGPUSensorsAcceleratorDelayTime);
     }
-    
-    if (acceleratorFound) {
-        releaseTimerEventSource;
-        onAcceleratorFound(pciDevice);
-    }
-    else if (probeCounter++ == (1000.0f / (float)kGPUSensorsAcceleratorWaitCycle) * 45) {
-        releaseTimerEventSource;
+    else if (probeCounter++ == (1000.0f / (kGPUSensorsAcceleratorWaitCycle * 45.0f))) {
+        releaseTimerEventSource(timerEventSource);
+        HWSensorsInfoLog("still waiting for IOAccelerator to start...");
         onTimeoutExceeded(pciDevice);
     }
     else {
-        if (probeCounter > 0 && !(probeCounter % ((int)(1000.0f / (float)kGPUSensorsAcceleratorWaitCycle) * 15)))
-            HWSensorsInfoLog("still waiting for IOAccelerator to start...");
-        
+//        if (probeCounter > 0 && !(probeCounter % ((int)(1000.0f / (float)kGPUSensorsAcceleratorWaitCycle) * 15)))
+//            HWSensorsInfoLog("still waiting for accelerator to start...");
+
         timerEventSource->setTimeoutMS(kGPUSensorsAcceleratorWaitCycle);
     }
     
     return kIOReturnSuccess;
 }
 
+IOReturn GPUSensors::delayedStartEvent()
+{
+    HWSensorsDebugLog("delayed start...");
+
+    onAcceleratorFound(pciDevice);
+    releaseTimerEventSource(timerEventSource);
+    return kIOReturnSuccess;
+}
+
 bool GPUSensors::shouldWaitForAccelerator()
 {
     return false;
+}
+
+bool GPUSensors::probIsAcceleratorAlreadyLoaded()
+{
+    return true;
+}
+
+bool GPUSensors::onStartUp(IOService *provider)
+{
+    return true;
 }
 
 bool GPUSensors::managedStart(IOService *provider)
@@ -84,6 +102,12 @@ void GPUSensors::onTimeoutExceeded(IOService *provider)
 bool GPUSensors::start(IOService *provider)
 {
     HWSensorsDebugLog("Starting...");
+
+    int arg_value = 1;
+
+    if (PE_parse_boot_argn("-gpusensors-disable", &arg_value, sizeof(arg_value))) {
+        return false;
+    }
     
     if (!provider || !super::start(provider))
         return false;
@@ -93,6 +117,9 @@ bool GPUSensors::start(IOService *provider)
         return false;
     }
 
+    if (!onStartUp(provider))
+        return false;
+
     if (shouldWaitForAccelerator()) {
         if (!(workloop = getWorkLoop())) {
             HWSensorsFatalLog("failed to obtain workloop");
@@ -100,18 +127,18 @@ bool GPUSensors::start(IOService *provider)
         }
         
         if (!(timerEventSource = IOTimerEventSource::timerEventSource( this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &GPUSensors::probeEvent)))) {
-            HWSensorsFatalLog("failed to initialize timer event source");
+            HWSensorsFatalLog("failed to initialize startup check timer event source");
             return false;
         }
         
         if (kIOReturnSuccess != workloop->addEventSource(timerEventSource))
         {
-            HWSensorsFatalLog("failed to add timer event source into workloop");
+            HWSensorsFatalLog("failed to add startup check timer event source into workloop");
             timerEventSource->release();
             return false;
         }
         
-        timerEventSource->setTimeoutMS(kGPUSensorsAcceleratorWaitCycle * 2);
+        timerEventSource->setTimeoutMS(100);
     }
     else return managedStart(provider);
     
@@ -122,7 +149,7 @@ void GPUSensors::stop(IOService *provider)
 {
     HWSensorsDebugLog("Stop...");
     
-    releaseTimerEventSource;
+    releaseTimerEventSource(timerEventSource);
     
     super::stop(provider);
 }

@@ -91,7 +91,7 @@ u16 nouveau_dcb_table(struct nouveau_device *device, u8 *ver, u8 *hdr, u8 *cnt, 
     
 	*ver = nv_ro08(device, dcb);
     
-	if (*ver >= 0x41) {
+	if (*ver >= 0x42) {
 		nv_warn(device, "DCB *ver 0x%02x unknown\n", *ver);
 		return 0x0000;
 	} else
@@ -183,6 +183,7 @@ int nouveau_bios_score(struct nouveau_device *device, const bool writeable)
 	}
     
 	nv_debug(device, "VBIOS appears to be valid\n");
+
 	return 3;
 }
 
@@ -191,15 +192,17 @@ static void nouveau_bios_shadow_pramin(struct nouveau_device *device)
 	u32 bar0 = 0;
 	u32 i;
     
-    nv_debug(device, "shadowing bios from PRAMIN\n");
+    nv_debug(device, "shadowing bios from PRAMIN");
     
 	if (device->card_type >= NV_50) {
+
 		u64 addr = (u64)(nv_rd32(device, 0x619f04) & 0xffffff00) << 8;
+
 		if (!addr) {
 			addr  = (u64)nv_rd32(device, 0x001700) << 16;
 			addr += 0xf0000;
 		}
-        
+
 		bar0 = nv_mask(device, 0x001700, 0xffffffff, (u32)(addr >> 16));
 	}
     
@@ -220,6 +223,8 @@ static void nouveau_bios_shadow_pramin(struct nouveau_device *device)
 out:
 	if (device->card_type >= NV_50)
 		nv_wr32(device, 0x001700, bar0);
+
+    nv_debug(device, "\n");
 }
 
 static void nouveau_bios_shadow_prom(struct nouveau_device *device)
@@ -282,12 +287,12 @@ void nouveau_vbios_init(struct nouveau_device *device)
 
 bool nouveau_bios_shadow(struct nouveau_device *device)
 {
-    nv_debug(device, "trying to shadow bios\n");
+    nv_info(device, "trying to shadow VBIOS...\n");
     
     nouveau_bios_shadow_pramin(device);
     
     if (device->bios.data && nouveau_bios_score(device, true) > 1) {
-        nv_debug(device, "VBIOS successfully read from PRAMIN\n");
+        nv_info(device, "VBIOS successfully read from PRAMIN\n");
         nouveau_vbios_init(device);
         return true;
     }
@@ -295,7 +300,7 @@ bool nouveau_bios_shadow(struct nouveau_device *device)
     nouveau_bios_shadow_prom(device);
     
     if (device->bios.data && nouveau_bios_score(device, false) > 1) {
-        nv_debug(device, "VBIOS successfully read from PROM\n");
+        nv_info(device, "VBIOS successfully read from PROM\n");
         nouveau_vbios_init(device);
         return true;
     }

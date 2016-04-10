@@ -3,60 +3,113 @@
 //  HWMonitor
 //
 //  Created by kozlek on 23.02.13.
-// 
+//
+
+/*
+ *  Copyright (c) 2013 Natan Zalkin <natan.zalkin@me.com>. All rights reserved.
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ *  02111-1307, USA.
+ *
+ */
 
 #import "PopupController.h"
 
 #import "Localizer.h"
 
 #import "HWMonitorDefinitions.h"
-#import "HWMonitorGroup.h"
-#import "GroupCell.h"
-#import "SensorCell.h"
-#import "ATASensorCell.h"
-#import "BatteryCell.h"
-#import "UpdatesController.h"
+
+#import "PopupGroupCell.h"
+#import "PopupSensorCell.h"
+#import "PopupAtaSmartSensorCell.h"
+#import "PopupBatteryCell.h"
+
+#import "JLNFadingScrollView.h"
+
+#import "HWMColorTheme.h"
+#import "HWMConfiguration.h"
+#import "HWMEngine.h"
+#import "HWMSensorsGroup.h"
+#import "HWMSensor.h"
+
+#import "NSTableView+HWMEngineHelper.h"
+#import "NSImage+HighResolutionLoading.h"
+#import "NSWindow+BackgroundBlur.h"
 
 @implementation PopupController
 
 @synthesize statusItem = _statusItem;
 @synthesize statusItemView = _statusItemView;
+@synthesize toolbarView = _toolbarView;
+@synthesize sensorsAndGroupsCollectionSnapshot = _sensorsAndGroupsCollectionSnapshot;
 
--(void)setColorTheme:(ColorTheme *)colorTheme
+#pragma mark -
+#pragma mark Properties
+
+-(BOOL)hasDraggedFavoriteItem
 {
-    _colorTheme = colorTheme;
-    
-    [(OBMenuBarWindow*)self.window setColorTheme:colorTheme];
-    [_tableView reloadData];
+    return YES;
 }
 
-- (id)init
+-(NSArray *)sensorsAndGroupsCollectionSnapshot
 {
-    self = [super initWithWindowNibName:@"PopupController"];
+    if (!_sensorsAndGroupsCollectionSnapshot) {
+        _sensorsAndGroupsCollectionSnapshot = [self.monitorEngine.sensorsAndGroups copy];
+    }
+
+    return _sensorsAndGroupsCollectionSnapshot;
+}
+
+-(HWMEngine *)monitorEngine
+{
+    return [HWMEngine sharedEngine];
+}
+
+//-(void)setMonitorEngine:(HWMEngine *)monitorEngine
+//{
+//    if (monitorEngine != _monitorEngine) {
+//
+//        _monitorEngine = monitorEngine;
+//
+//        [_statusItemView setMonitorEngine:_monitorEngine];
+//    }
+//}
+
+#pragma mark -
+#pragma mark Overridden Methods
+
+- (instancetype)init
+{
+    self = [super initWithWindowNibName:NSStringFromClass([PopupController class])];
     
     if (self != nil)
     {
         _statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
         
+        [_statusItem setHighlightMode:NO];
+        
         _statusItemView = [[StatusItemView alloc] initWithFrame:NSMakeRect(0, 0, 22, 22) statusItem:_statusItem];
-        
-        _statusItemView.image = [NSImage imageNamed:@"thermometer"];
-        _statusItemView.alternateImage = [NSImage imageNamed:@"thermometer_template"];
-        
+
+        [_statusItemView setImage:[NSImage loadImageNamed:@"scale" ofType:@"png"]];
+        [_statusItemView setAlternateImage:[NSImage loadImageNamed:@"scale-white" ofType:@"png"]];
+
         [_statusItemView setAction:@selector(togglePanel:)];
         [_statusItemView setTarget:self];
-        
-        [self performSelector:@selector(initialSetup) withObject:nil afterDelay:0.0];
     }
     
     return self;
-}
-
--(void)awakeFromNib
-{
-    [[self statusItemView] setUseBigFont:[[NSUserDefaults standardUserDefaults] boolForKey:kHWMonitorUseBigStatusMenuFont]];
-    [[self statusItemView] setUseShadowEffect:[[NSUserDefaults standardUserDefaults] boolForKey:kHWMonitorUseShadowEffect]];
-    [self setShowVolumeNames:[[NSUserDefaults standardUserDefaults] integerForKey:kHWMonitorShowVolumeNames]];
 }
 
 - (void)dealloc
@@ -64,32 +117,75 @@
     [[NSStatusBar systemStatusBar] removeStatusItem:_statusItem];
 }
 
+-(void)windowDidLoad
+{
+    [super windowDidLoad];
+
+    //[[_titleField cell] setBackgroundStyle:NSBackgroundStyleRaised];
+
+    // Install status item into the menu bar
+    OBMenuBarWindow *menubarWindow = (OBMenuBarWindow *)self.window;
+
+    menubarWindow.statusItemView = _statusItemView;
+    menubarWindow.statusItem = _statusItem;
+    menubarWindow.attachedToMenuBar = YES;
+    menubarWindow.hideWindowControls = YES;
+
+    menubarWindow.toolbarView = _toolbarView;
+
+    [menubarWindow setWorksWhenModal:YES];
+
+    //    [Localizer localizeView:menubarWindow];
+    //    [Localizer localizeView:_toolbarView];
+
+    // Make main menu font size smaller
+    //            NSFont* font = [NSFont menuFontOfSize:13];
+    //            NSDictionary* fontAttribute = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
+    //
+    //            [_mainMenu setFont:font];
+    //
+    //            for (id subItem in [_mainMenu itemArray]) {
+    //                if ([subItem isKindOfClass:[NSMenuItem class]]) {
+    //                    NSMenuItem* menuItem = subItem;
+    //                    NSString* title = [menuItem title];
+    //
+    //                    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:title attributes:fontAttribute];
+    //
+    //                    [menuItem setAttributedTitle:attributedTitle];
+    //                }
+    //            }
+
+    [(OBMenuBarWindow*)self.window setColorTheme:self.monitorEngine.configuration.colorTheme];
+    [(JLNFadingScrollView *)_scrollView setFadeColor:self.monitorEngine.configuration.colorTheme.listBackgroundColor];
+
+    [_tableView registerForDraggedTypes:[NSArray arrayWithObject:kHWMonitorPopupItemDataType]];
+    [_tableView setDraggingSourceOperationMask:NSDragOperationMove | NSDragOperationDelete forLocal:YES];
+
+    [Localizer localizeView:self.window];
+    [Localizer localizeView:_toolbarView];
+
+    [self addObserver:self forKeyPath:@keypath(self, monitorEngine.configuration.colorTheme) options:0 context:nil];
+    [self addObserver:self forKeyPath:@keypath(self, monitorEngine.configuration.showSensorLegendsInPopup) options:0 context:nil];
+    [self addObserver:self forKeyPath:@keypath(self, monitorEngine.sensorsAndGroups) options:0 context:nil];
+
+    [self layoutContent:YES orderFront:NO animated:NO];
+}
+
 -(void)showWindow:(id)sender
 {
-    if (self.window.isVisible)
-        return;
-    
+    //OBMenuBarWindow *menubarWindow = (OBMenuBarWindow *)self.window;
+
     if (self.delegate && [self.delegate respondsToSelector:@selector(popupWillOpen:)]) {
         [self.delegate popupWillOpen:self];
     }
-    
-    // Update values
-    for (id item in _items) {
-        if ([item isKindOfClass:[HWMonitorItem class]]) {
-            [self updateValueForItem:item];
-        }
-    }
 
-    [self resizeToContentAndOrderFront:YES];
+    //if (!menubarWindow.attachedToMenuBar) {
+        [NSApp activateIgnoringOtherApps:YES];
+    //}
     
-//    if (!_windowFilter) {
-//        _windowFilter = [[WindowFilter alloc] initWithWindow:self.window name:@"CIGaussianBlur" andOptions:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.5] forKey:@"inputRadius"]];
-//    }
-//    else {
-//        [_windowFilter setFilterOptions:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.5] forKey:@"inputRadius"]];
-//    }
-    
-    self.statusItemView.isHighlighted = YES;
+    [self layoutContent:NO orderFront:YES animated:YES];
+
+    //self.statusItemView.isHighlighted = YES;
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(popupDidOpen:)]) {
         [self.delegate popupDidOpen:self];
@@ -98,36 +194,79 @@
 
 -(void)close
 {
-    if (!self.window.isVisible)
-        return;
-    
     if (self.delegate && [self.delegate respondsToSelector:@selector(popupWillClose:)]) {
         [self.delegate popupWillClose:self];
     }
     
-//    if (_windowFilter) {
-//        [_windowFilter setFilterOptions:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.0] forKey:@"inputRadius"]];
-//    }
+    [self.window orderOut:nil];
 
-//    [NSAnimationContext beginGrouping];
-//    [[NSAnimationContext currentContext] setDuration:CLOSE_DURATION];
-//    [self.window.animator setAlphaValue:0];
-//    [NSAnimationContext endGrouping];
-    
-    //dispatch_after(dispatch_walltime(NULL, NSEC_PER_SEC * CLOSE_DURATION * 2), dispatch_get_main_queue(), ^{
-        [self.window orderOut:nil];
-    //});
-    
-    self.statusItemView.isHighlighted = NO;
+    //self.statusItemView.isHighlighted = NO;
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(popupDidClose:)]) {
         [self.delegate popupDidClose:self];
     }
 }
+
 #pragma mark -
-#pragma mark Events
+#pragma mark Methods
 
+// Space betweeen last sensor cell and bottom side of a window
+#define BOTTOM_SPACE  5
 
+- (void)layoutContent:(BOOL)resizeToContent orderFront:(BOOL)orderFront animated:(BOOL)animated
+{
+    OBMenuBarWindow *menubarWindow = (OBMenuBarWindow *)self.window;
+
+    if (resizeToContent) {
+
+        __block CGFloat height = 0;
+
+        [self.sensorsAndGroupsCollectionSnapshot enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            height += [self tableView:_tableView heightOfRow:idx];
+        }];
+
+        height += BOTTOM_SPACE;
+
+        CGFloat fullHeight = height + menubarWindow.toolbarHeight * 2;
+        CGFloat screenHeight = menubarWindow.screen.visibleFrame.size.height;
+
+        if (fullHeight > screenHeight) {
+            height = screenHeight - menubarWindow.toolbarView.frame.size.height * 2 - BOTTOM_SPACE;
+            [_scrollView setHasVerticalScroller:YES];
+        }
+        else {
+            [_scrollView setHasVerticalScroller:NO];
+        }
+
+        if (animated) {
+            [[_tableHeightConstraint animator] setConstant:height];
+        }
+        else {
+            [_tableHeightConstraint setConstant:height];
+        }
+    }
+    
+    // Order front if needed
+    if (orderFront) {
+        [menubarWindow makeKeyAndOrderFront:self];
+        [self.window setHeavyBackgroundBlur];
+    }
+}
+
+-(void)reloadSensorsTableView:(id)sender
+{
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+
+        NSArray *oldSensorsAndGroups = [_sensorsAndGroupsCollectionSnapshot copy];
+
+        _sensorsAndGroupsCollectionSnapshot = nil;
+
+        [_tableView updateWithObjectValues:self.sensorsAndGroupsCollectionSnapshot previousObjectValues:oldSensorsAndGroups];
+
+        [self layoutContent:YES orderFront:NO animated:YES];
+    }];
+
+}
 
 #pragma mark -
 #pragma mark Actions
@@ -141,255 +280,166 @@
         if (menubarWindow.isVisible && (menubarWindow.isKeyWindow || menubarWindow.attachedToMenuBar))
         {
             [self close];
-            self.statusItemView.isHighlighted = NO;
         }
         else
         {
-            if (!menubarWindow.attachedToMenuBar) {
-                [NSApp activateIgnoringOtherApps:YES];
-            }
-            
-            [self showWindow:nil];
-            self.statusItemView.isHighlighted = YES;
+            [self showWindow:self];
         }
     }
 }
 
 - (void)showAboutPanel:(id)sender
 {
-    [_aboutController showWindow:sender];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [_aboutController showWindow:sender];
+    }];
 }
 
 - (void)openPreferences:(id)sender
 {
-    [_appController showWindow:sender];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [_appController showWindow:sender];
+    }];
 }
 
 - (void)showGraphsWindow:(id)sender
 {
-    [_graphsController showWindow:sender];
-}
-
-- (void)checkForUpdates:(id)sender
-{
-    [self performSelectorInBackground:@selector(checkForUpdatesDialog) withObject:nil];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [_graphsController showWindow:sender];
+    }];
 }
 
 #pragma mark -
-#pragma mark Methods
+#pragma mark Events
 
-- (void)initialSetup
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    [_tableView registerForDraggedTypes:[NSArray arrayWithObject:kHWMonitorPopupItemDataType]];
-    [_tableView setDraggingSourceOperationMask:NSDragOperationMove forLocal:YES];
-    
-    //[[_titleField cell] setBackgroundStyle:NSBackgroundStyleRaised];
-    
-    // Install status item into the menu bar
-    OBMenuBarWindow *menubarWindow = (OBMenuBarWindow *)self.window;
-    
-    menubarWindow.statusItemView = _statusItemView;
-    menubarWindow.statusItem = _statusItem;
-    menubarWindow.attachedToMenuBar = YES;
-    menubarWindow.hideWindowControls = YES;
-    
-    menubarWindow.toolbarView = _toolbarView;
-    
-    [menubarWindow setWorksWhenModal:YES];
-    
-    [Localizer localizeView:menubarWindow];
-    [Localizer localizeView:_toolbarView];
-    
-    // Make main menu font size smaller
-    NSFont* font = [NSFont menuFontOfSize:13];
-	NSDictionary* fontAttribute = [NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil];
-    
-    for (id subItem in [_mainMenu itemArray]) {
-        if ([subItem isKindOfClass:[NSMenuItem class]]) {
-            NSMenuItem* menuItem = subItem;
-            NSString* title = [menuItem title];
-            
-            NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:title attributes:fontAttribute];
-            
-            [menuItem setAttributedTitle:attributedTitle];
-        }
+    if ([keyPath isEqual:@keypath(self, monitorEngine.configuration.colorTheme)]) {
+
+        [(OBMenuBarWindow*)self.window setColorTheme:self.monitorEngine.configuration.colorTheme];
+        [(JLNFadingScrollView *)_scrollView setFadeColor:self.monitorEngine.configuration.colorTheme.listBackgroundColor];
+
+        //self.window.
+
     }
-    
-    [self resizeToContentAndOrderFront:NO];
-}
+    else if ([keyPath isEqual:@keypath(self, monitorEngine.configuration.showSensorLegendsInPopup)] ||
+             [keyPath isEqual:@keypath(self, monitorEngine.sensorsAndGroups)]) {
 
-- (void)checkForUpdatesDialog
-{
-    UpdatesController *controller = (UpdatesController*)self.updatesController;
-    
-    [controller checkForUpdatesForced];
-}
+        [self reloadSensorsTableView:self];
 
-- (void) setupWithGroups:(NSArray*)groups
-{
-    _items = [[NSMutableArray alloc] init];
-    
-    // Add special toolbar item
-    //[_items addObject:@"Toolbar"];
-    
-    if ([groups count] > 0) {
-        
-        // Restore indexes
-        NSMutableDictionary *itemIndex = [[NSMutableDictionary alloc] initWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:kHWMonitorItemIndex]];
-        
-        for (HWMonitorGroup *group in groups) {
-            if ([group checkVisibility]) {
-                [_items addObject:group];
-
-                // Sort out
-                [[group items] sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                    NSNumber *idx1 = [itemIndex objectForKey:[[obj1 sensor] name]];
-                    NSNumber *idx2 = [itemIndex objectForKey:[[obj2 sensor] name]];
-                    
-                    return idx1 && idx2 ? [idx1 integerValue] - [idx2 integerValue] : 0;
-                }];
-                
-                // Add items
-                for (HWMonitorItem *item in [group items]) {
-                    if ([item isVisible]) {
-                        [_items addObject:item];
-                        [itemIndex setObject:[NSNumber numberWithInteger:[_items count] - 1] forKey:item.sensor.name];
-                    }
-                }
-            }
-        }
-        
-        // Save key index
-        [[NSUserDefaults standardUserDefaults] setObject:itemIndex forKey:kHWMonitorItemIndex];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    else {
-        [_items addObject:@"Dummy"];
-    }
-    
-    [self reloadData];
-}
-
-- (void)resizeToContentAndOrderFront:(BOOL)orderFront
-{
-    OBMenuBarWindow *menubarWindow = (OBMenuBarWindow *)self.window;
-    
-    CGFloat height = 13; // ??
-    
-    for (int i = 0; i < [_items count]; i++) {
-        height += [self tableView:_tableView heightOfRow:i];
-    }
-    
-    height = 6 + (menubarWindow.attachedToMenuBar ? OBMenuBarWindowArrowHeight : 0) + (height ? height : _tableView.frame.size.height);
-
-    [menubarWindow setContentSize:NSMakeSize(menubarWindow.frame.size.width, height)];
-    [menubarWindow setMaxSize:NSMakeSize(menubarWindow.maxSize.width, menubarWindow.frame.size.height)];
-    
-    // Order front if needed
-    if (orderFront) {
-        [self.window makeKeyAndOrderFront:self];
     }
 }
 
-- (void)reloadData
+- (void)windowDidAttachToStatusBar:(id)sender
 {
-    [_tableView reloadData];
-    [self resizeToContentAndOrderFront:NO];
-    [_statusItemView setNeedsDisplay:YES];
+//    OBMenuBarWindow *menubarWindow = (OBMenuBarWindow *)self.window;
+//
+//    [menubarWindow setMaxSize:NSMakeSize(menubarWindow.maxSize.width, menubarWindow.frame.size.height)];
+//    [menubarWindow setMinSize:NSMakeSize(menubarWindow.minSize.width, menubarWindow.toolbarHeight + BOTTOM_SPACE)];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC / 7)), dispatch_get_main_queue(), ^{
+        [self layoutContent:YES orderFront:NO animated:YES];
+    });
 }
 
--(void)updateValueForItem:(HWMonitorItem*)item
+- (void)windowDidDetachFromStatusBar:(id)sender
 {
-    if ([item isVisible]) {
-        id cell = [_tableView viewAtColumn:0 row:[_items indexOfObject:item] makeIfNecessary:NO];
-        
-        if (cell) {
-            NSColor *valueColor;
-            
-            switch ([item.sensor level]) {
-                    /*case kHWSensorLevelDisabled:
-                     break;
-                     
-                     case kHWSensorLevelNormal:
-                     break;*/
-                    
-                case kHWSensorLevelModerate:
-                    valueColor = [NSColor colorWithCalibratedRed:0.7f green:0.3f blue:0.03f alpha:1.0f];
-                    break;
-                    
-                case kHWSensorLevelExceeded:
-                    [[cell textField] setTextColor:[NSColor redColor]];
-                case kHWSensorLevelHigh:
-                    valueColor = [NSColor redColor];
-                    break;
-                    
-                default:
-                    valueColor = _colorTheme.itemValueTitleColor;
-                    break;
-            }
-            
-            [[cell valueField] takeStringValueFrom:item.sensor];
-            
-            if (![[[cell valueField] textColor] isEqualTo:valueColor]) {
-                [[cell valueField] setTextColor:valueColor];
-            }
-            
-            if ([item.sensor genericDevice] && [[item.sensor genericDevice] isKindOfClass:[GenericBatteryDevice class]]) {
-                [cell setGaugeLevel:[item.sensor intValue]];
-            }
+//    OBMenuBarWindow *menubarWindow = (OBMenuBarWindow *)self.window;
+//
+//    [menubarWindow setMaxSize:NSMakeSize(menubarWindow.maxSize.width, menubarWindow.frame.size.height)];
+//    [menubarWindow setMinSize:NSMakeSize(menubarWindow.minSize.width, menubarWindow.toolbarHeight + BOTTOM_SPACE)];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC / 7)), dispatch_get_main_queue(), ^{
+        [NSApp activateIgnoringOtherApps:YES];
+        [self layoutContent:YES orderFront:YES animated:YES];
+    });
+}
+
+- (void)windowDidBecomeKey:(id)sender
+{
+    for (id subveiw in _toolbarView.subviews)
+    {
+        if ([subveiw respondsToSelector:@selector(setEnabled:)]) {
+            [subveiw setEnabled:YES];
         }
     }
 }
 
--(void)updateValuesForSensors:(NSArray *)sensors
+- (void)windowDidResignKey:(id)sender
 {
-    if ([self.window isVisible]) {
-        for (HWMonitorSensor *sensor in sensors) {
-            [self updateValueForItem:[sensor representedObject]];
+    for (id subveiw in _toolbarView.subviews)
+    {
+        if ([subveiw respondsToSelector:@selector(setEnabled:)]) {
+            [subveiw setEnabled:NO];
         }
     }
-    
-    [_statusItemView setNeedsDisplay:YES];
 }
 
-#pragma mark -
-#pragma mark NSTableView delegate
+#pragma mark - NSPopoverDelegate
+
+-(void)popoverWillShow:(NSNotification *)notification
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(popupWillOpen:)]) {
+        [self.delegate popupWillOpen:self];
+    }
+}
+
+-(void)popoverDidShow:(NSNotification *)notification
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(popupDidOpen:)]) {
+        [self.delegate popupDidOpen:self];
+    }
+}
+
+-(void)popoverWillClose:(NSNotification *)notification
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(popupWillClose:)]) {
+        [self.delegate popupWillClose:self];
+    }
+}
+
+-(void)popoverDidClose:(NSNotification *)notification
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(popupDidClose:)]) {
+        [self.delegate popupDidClose:self];
+    }
+}
+
+#pragma mark - NSTableViewDelegate
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return [_items count];
+    return self.sensorsAndGroupsCollectionSnapshot.count;
 }
 
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row
-{    
-    id item = [_items objectAtIndex:row];
-    
-    if ([item isKindOfClass:[HWMonitorGroup class]]) {
-        return 19;
-    }
-    else if ([item isKindOfClass:[HWMonitorItem class]]) {
-        HWMonitorSensor *sensor = [item sensor];
-        
-        if ((_showVolumeNames &&
-             sensor.genericDevice &&
-             [sensor.genericDevice isKindOfClass:[ATAGenericDrive class]]) ||
-            ([sensor.genericDevice isKindOfClass:[GenericBatteryDevice class]] && [sensor.genericDevice deviceType] != kInternalBatteryType && [sensor.genericDevice productName])) {
-            return 27;
-        }
-        else {
-            return 17;
-        }
-    }
-//    else if ([item isKindOfClass:[NSString class]] && [item isEqualToString:@"Toolbar"]) {
-//        return kHWMonitorToolbarHeight;
-//    }
+{
+    HWMItem *item = [self.sensorsAndGroupsCollectionSnapshot objectAtIndex:row];
 
+    NSUInteger height = [item isKindOfClass:[HWMSensorsGroup class]] ? 21 : 17;
 
-    return 17;
+    if (item.legend && self.monitorEngine.configuration.showSensorLegendsInPopup.boolValue)
+        height += 10;
+
+    return height;
 }
 
 - (BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row
 {
     return NO;
+}
+
+-(id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    return [self.sensorsAndGroupsCollectionSnapshot objectAtIndex:row];
+}
+
+- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    HWMItem *item = [self.sensorsAndGroupsCollectionSnapshot objectAtIndex:row];
+
+    id view = [tableView makeViewWithIdentifier:item.identifier owner:self];
+
+    return view;
 }
 
 //- (BOOL)tableView:(NSTableView *)tableView isGroupRow:(NSInteger)row
@@ -409,18 +459,36 @@
         return NO;
     }
     
-    id item = [_items objectAtIndex:[rowIndexes firstIndex]];
+    id item = [self.sensorsAndGroupsCollectionSnapshot objectAtIndex:[rowIndexes firstIndex]];
     
-    if ([item isKindOfClass:[HWMonitorItem class]]) {
+    if ([item isKindOfClass:[HWMSensor class]]) {
         NSData *indexData = [NSKeyedArchiver archivedDataWithRootObject:rowIndexes];
         
         [pboard declareTypes:[NSArray arrayWithObjects:kHWMonitorPopupItemDataType, nil] owner:self];
         [pboard setData:indexData forType:kHWMonitorPopupItemDataType];
 
+        [NSApp activateIgnoringOtherApps:YES];
+
         return YES;
     }
 
     return NO;
+}
+
+-(void)tableView:(NSTableView *)tableView draggingSession:(NSDraggingSession *)session endedAtPoint:(NSPoint)screenPoint operation:(NSDragOperation)operation
+{
+    if (tableView == _tableView && (operation == NSDragOperationDelete || _currentItemDragOperation == NSDragOperationDelete))
+    {
+        NSPasteboard* pboard = [session draggingPasteboard];
+        NSData* rowData = [pboard dataForType:kHWMonitorPopupItemDataType];
+        NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
+        NSInteger fromRow = [rowIndexes firstIndex];
+        id fromItem = [self.sensorsAndGroupsCollectionSnapshot objectAtIndex:fromRow];
+
+        [(HWMItem*)fromItem setHidden:@YES];
+
+        NSShowAnimationEffect(NSAnimationEffectPoof, screenPoint, NSZeroSize, nil, nil, nil);
+    }
 }
 
 - (NSDragOperation)tableView:(NSTableView *)tableView validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)toRow proposedDropOperation:(NSTableViewDropOperation)dropOperation;
@@ -435,39 +503,30 @@
     NSData* rowData = [pboard dataForType:kHWMonitorPopupItemDataType];
     NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
     NSInteger fromRow = [rowIndexes firstIndex];
-    
-    id sourceItem = [_items objectAtIndex:fromRow];
-    
+    id fromItem = [self.sensorsAndGroupsCollectionSnapshot objectAtIndex:fromRow];
+
     _currentItemDragOperation = NSDragOperationNone;
     
-    if (toRow > 0) {
+    if ([fromItem isKindOfClass:[HWMSensor class]] && toRow > 0) {
         
         _currentItemDragOperation = NSDragOperationMove;
-        
-        if (toRow < [_items count]) {
-            
+
+        if (toRow < self.sensorsAndGroupsCollectionSnapshot.count) {
             if (toRow == fromRow || toRow == fromRow + 1) {
                 _currentItemDragOperation = NSDragOperationNone;
             }
             else {
-                id destinationItem = [_items objectAtIndex:toRow];
-                
-                if ([destinationItem isKindOfClass:[HWMonitorItem class]] && [(HWMonitorItem*)sourceItem group] != [(HWMonitorItem*)destinationItem group]) {
+                id toItem = [self.sensorsAndGroupsCollectionSnapshot objectAtIndex:toRow];
+
+                if ([toItem isKindOfClass:[HWMSensor class]] && [(HWMSensor*)fromItem group] != [(HWMSensor*)toItem group]) {
                     _currentItemDragOperation = NSDragOperationNone;
-                }
-                else {
-                    destinationItem = [_items objectAtIndex:toRow - 1];
-                    
-                    if ([destinationItem isKindOfClass:[HWMonitorItem class]] && [(HWMonitorItem*)sourceItem group] != [(HWMonitorItem*)destinationItem group]) {
-                        _currentItemDragOperation = NSDragOperationNone;
-                    }
                 }
             }
         }
         else {
-            id destinationItem = [_items objectAtIndex:toRow - 1];
-            
-            if ([destinationItem isKindOfClass:[HWMonitorItem class]] && [(HWMonitorItem*)sourceItem group] != [(HWMonitorItem*)destinationItem group]) {
+            id toItem = [self.sensorsAndGroupsCollectionSnapshot objectAtIndex:toRow - 1];
+
+            if ([toItem isKindOfClass:[HWMSensor class]] && [(HWMSensor*)fromItem group] != [(HWMSensor*)toItem group]) {
                 _currentItemDragOperation = NSDragOperationNone;
             }
         }
@@ -487,100 +546,18 @@
     NSIndexSet* rowIndexes = [NSKeyedUnarchiver unarchiveObjectWithData:rowData];
     NSInteger fromRow = [rowIndexes firstIndex];
 
-    HWMonitorItem *sourceItem = [_items objectAtIndex:fromRow];
-    //HWMonitorItem *destinationItem = [_items objectAtIndex:toRow];
+    HWMSensor *fromItem = [self.sensorsAndGroupsCollectionSnapshot objectAtIndex:fromRow];
     
-    [_items insertObject:sourceItem atIndex:toRow];
-    [_items removeObjectAtIndex:toRow < fromRow ? fromRow + 1 : fromRow];
+    id checkItem = toRow >= self.sensorsAndGroupsCollectionSnapshot.count ? [self.sensorsAndGroupsCollectionSnapshot lastObject] : [self.sensorsAndGroupsCollectionSnapshot objectAtIndex:toRow];
     
-    [_tableView reloadData];
-    
-    // Rebuild and save key index
-    NSMutableDictionary *itemIndex = [[NSMutableDictionary alloc] init];
-    
-    [_items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        if ([obj isKindOfClass:[HWMonitorItem class]]) {
-            [itemIndex setObject:[NSNumber numberWithInteger:idx] forKey:[[obj sensor] name]];
-        }
-    }];
-    
-    [[NSUserDefaults standardUserDefaults] setObject:itemIndex forKey:kHWMonitorItemIndex];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    return YES;
-}
+    HWMSensor *toItem = ![checkItem isKindOfClass:[HWMSensor class]] 
+    || toRow >= self.sensorsAndGroupsCollectionSnapshot.count ? nil : checkItem;
 
-- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
-{
-    id item = [_items objectAtIndex:row];
-    
-    if ([item isKindOfClass:[HWMonitorGroup class]]) {
-        HWMonitorGroup *group = item;
-        
-        GroupCell *groupCell = [tableView makeViewWithIdentifier:@"Group" owner:self];
-        
-        [groupCell setColorTheme:_colorTheme];
-        [groupCell.textField setStringValue:[group title]];
-        [groupCell.imageView setObjectValue:_colorTheme.useDarkIcons ? [[group icon] image] : [[group icon] alternateImage]];
-        
-        return groupCell;
-    }
-    else if ([item isKindOfClass:[HWMonitorItem class]]) {
-        HWMonitorSensor *sensor = [item sensor];
-        
-        id cell = [tableView makeViewWithIdentifier:[item representation] owner:self];
-        
-        [cell setColorTheme:_colorTheme];
-        
-        if ([sensor genericDevice] && [[sensor genericDevice] isKindOfClass:[ATAGenericDrive class]]) {
-            if ([cell isKindOfClass:[ATASensorCell class]]) {
-                [(ATASensorCell*)cell setGenericDrive:[sensor genericDevice]];
-            }
-            
-            if (_showVolumeNames ) {
-                [[cell subtitleField] setStringValue:[[sensor genericDevice] volumesNames]];
-                [[cell subtitleField] setHidden:NO];
-            }
-        }
-        else if ([sensor genericDevice] && [[sensor genericDevice] isKindOfClass:[GenericBatteryDevice class]]) {
-            // Hide subtitle for internal battery
-            if ([sensor.genericDevice deviceType] != kInternalBatteryType &&
-                [sensor.genericDevice productName]) {
-                [[cell subtitleField] setStringValue:[[sensor genericDevice] productName]];
-                [[cell subtitleField] setHidden:NO];
-            }
-            else  {
-                [[cell subtitleField] setHidden:YES];
-            }
-            
-            [cell setGaugeLevel:[sensor intValue]];
-        }
-        else {
-            [[cell subtitleField] setHidden:YES];
-        }
-        
-        [[cell textField] setStringValue:[sensor title]];
-        //[[cell valueField] setStringValue:[sensor stringValue]];
-        [[cell valueField] takeStringValueFrom:sensor];
-        
-        return cell;
-    }
-//    else if ([item isKindOfClass:[NSString class]] && [item isEqualToString:@"Toolbar"]) {
-//        NSTableCellView *buttonsCell = [tableView makeViewWithIdentifier:item owner:self];
-//        
-//        [buttonsCell.textField setTextColor:_colorTheme.toolbarTitleColor];
-//        
-//        return buttonsCell;
-//    }
-    else if ([item isKindOfClass:[NSString class]] && [item isEqualToString:@"Dummy"]) {
-        NSTableCellView *dummyCell = [tableView makeViewWithIdentifier:item owner:self];
-        
-        [dummyCell.textField setTextColor:_colorTheme.itemTitleColor];
-        
-        return dummyCell;
-    }
-    
-    return nil;
+    [fromItem.group moveSensorsObjectAtIndex:[fromItem.group.sensors indexOfObject:fromItem] toIndex: toItem ? [fromItem.group.sensors indexOfObject:toItem] : fromItem.group.sensors.count];
+
+    [self.monitorEngine setNeedsUpdateSensorLists];
+
+    return YES;
 }
 
 @end

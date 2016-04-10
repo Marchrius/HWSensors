@@ -1,13 +1,14 @@
 .DS_Store
-*.app
-*.menu
-*.kext
-*.pkg
-*.octest
+.idea
 xcuserdata
 smcutil
 version.h
 revision.txt
+Appcast/*
+Binaries/*
+Sparkle/Binaries/*
+Package/Distribution.xml
+Package/*.pkg
 
 
-HWSensors.xcworkspace/xcshareddata/HWSensors.xccheckout
+*.xccheckout
