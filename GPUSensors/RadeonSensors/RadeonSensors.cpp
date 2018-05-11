@@ -9,7 +9,6 @@
  */
 
 #include "RadeonSensors.h"
-#include "FakeSMCDefinitions.h"
 
 #include "radeon_chipinfo_gen.h"
 #include "radeon_definitions.h"
@@ -19,6 +18,9 @@
 #include "si.h"
 #include "cik.h"
 #include "evergreen.h"
+#include "vega.h"
+
+#include "smc.h"
 
 #define super GPUSensors
 OSDefineMetaClassAndStructors(RadeonSensors, GPUSensors)
@@ -59,10 +61,10 @@ bool RadeonSensors::probIsAcceleratorAlreadyLoaded()
                 }
             }
 
-            OSSafeRelease(iterator);
+            OSSafeReleaseNULL(iterator);
         }
         
-        OSSafeRelease(matching);
+        OSSafeReleaseNULL(matching);
     }
 
     return acceleratorFound;
@@ -75,7 +77,7 @@ bool RadeonSensors::managedStart(IOService *provider)
         return false;
     }
     
-    if ((card.card_index = takeVacantGPUIndex()) < 0) {
+    if ((card.card_index = takeVacantGPUIndex()) == UINT8_MAX) {
         radeon_info(&card, "failed to take GPU index\n");
         return false;
     }
@@ -101,6 +103,14 @@ bool RadeonSensors::managedStart(IOService *provider)
 //        }
 //    }
     
+    IOMemoryMap * mmio5 = NULL;
+    IOMemoryDescriptor * theDescriptor;
+    IOPhysicalAddress bar = (IOPhysicalAddress)((card.pdev->configRead32(kIOPCIConfigBaseAddress5)) & ~0x3f);
+    theDescriptor = IOMemoryDescriptor::withPhysicalAddress (bar, 0x80000, kIODirectionOutIn);
+    if(theDescriptor != NULL)
+    {
+        mmio5 = theDescriptor->map();
+    }
     card.mmio = card.pdev->mapDeviceMemoryWithIndex(1);
     
     if (!card.mmio || 0 == card.mmio->getPhysicalAddress()) {
@@ -108,6 +118,14 @@ bool RadeonSensors::managedStart(IOService *provider)
         return false;
     }
     
+	if (card.mmio)	{
+		card.mmio_base = (volatile UInt8 *)card.mmio->getVirtualAddress();
+		HWSensorsInfoLog("mmio_base=0x%llx\n", card.mmio->getPhysicalAddress());
+	}
+	else {
+		HWSensorsInfoLog(" have no mmio\n ");
+		return false;
+	}
     card.family = CHIP_FAMILY_UNKNOW;
     card.int_thermal_type = THERMAL_TYPE_NONE;
     
@@ -222,6 +240,12 @@ bool RadeonSensors::managedStart(IOService *provider)
                  !strncasecmp("HAINAN", card.bios_name, 64)) {
             card.int_thermal_type = THERMAL_TYPE_SI;
         }
+        else if (!strncasecmp("POLARIS", card.bios_name, 64)) {
+            card.int_thermal_type = THERMAL_TYPE_PL;
+        }
+        else if (!strncasecmp("VEGA10", card.bios_name, 64)) {
+            card.int_thermal_type = THERMAL_TYPE_VEGA;
+        }
     }
     
     // Use driver's configuration to resolve temperature sensor type
@@ -283,6 +307,10 @@ bool RadeonSensors::managedStart(IOService *provider)
                 card.int_thermal_type = THERMAL_TYPE_CI;
                 break;
                 
+            case CHIP_FAMILY_POLARIS:
+                card.int_thermal_type = THERMAL_TYPE_PL;
+                break;
+
             case CHIP_FAMILY_KAVERI:
             case CHIP_FAMILY_KABINI:
                 card.int_thermal_type = THERMAL_TYPE_KV;
@@ -318,27 +346,43 @@ bool RadeonSensors::managedStart(IOService *provider)
                 card.get_core_temp = ci_get_temp;
                 radeon_info(&card, "adding Sea Islands (CI) thermal sensor\n");
                 break;
+            case THERMAL_TYPE_PL:
+                card.get_core_temp = pl_get_temp;
+                radeon_info(&card, "adding Arctic Islands (Polaris) thermal sensor\n");
+                break;
             case THERMAL_TYPE_KV:
                 card.get_core_temp = kv_get_temp;
                 radeon_info(&card, "adding Sea Islands (Kaveri) thermal sensor\n");
                 break;
+            case THERMAL_TYPE_VEGA:
+                card.get_core_temp = vega_get_temp;                
+                radeon_info(&card, "adding Vega thermal sensor\n");
+                break;
             default:
                 radeon_fatal(&card, "card 0x%04x is unsupported\n", card.chip_id & 0xffff);
                 releaseGPUIndex(card.card_index);
-                card.card_index = -1;
+                card.card_index = UINT8_MAX;
                 return false;
         }
     }
     
+  if (!card.mmio_base || card.family >= CHIP_FAMILY_HAWAII) {
+    if (mmio5 && mmio5->getPhysicalAddress() != 0) {
+      card.mmio = mmio5;
+      card.mmio_base = (volatile UInt8 *)card.mmio->getVirtualAddress();
+    }
+    HWSensorsInfoLog(" use mmio5 at 0x%llx\n", (unsigned long long)card.mmio_base);
+  }
+
     char key[5];
 
     if (card.get_core_temp) {
         snprintf(key, 5, KEY_FORMAT_GPU_DIODE_TEMPERATURE, card.card_index);
-        if (!addSensorForKey(key, TYPE_SP78, 2, kFakeSMCTemperatureSensor, 0)) {
+        if (!addSensorForKey(key, SMC_TYPE_SP78, 2, kFakeSMCTemperatureSensor, 0)) {
             //radeon_error(&card, "failed to register temperature sensor for key %s\n", key);
             radeon_fatal(&card, "failed to register temperature sensor for key %s\n", key);
             releaseGPUIndex(card.card_index);
-            card.card_index = -1;
+            card.card_index = UINT8_MAX;
             return false;
         }
     }
@@ -353,14 +397,14 @@ bool RadeonSensors::managedStart(IOService *provider)
 void RadeonSensors::stop(IOService *provider)
 {
     if (card.mmio)
-        OSSafeRelease(card.mmio);
+        OSSafeReleaseNULL(card.mmio);
     
     if (card.bios && card.bios_size > 0) {
         IOFree(card.bios, card.bios_size);
         card.bios = 0;
     }
     
-    if (card.card_index >= 0)
+    if (card.card_index < UINT8_MAX)
         releaseGPUIndex(card.card_index);
     
     super::stop(provider);

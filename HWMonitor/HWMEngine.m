@@ -43,6 +43,7 @@
 #import "HWMFavorite.h"
 #import "HWMSmcFanController.h"
 #import "HWMTimer.h"
+#import "HWMATASmartInterfaceWrapper.h"
 
 #include <sys/sysctl.h>
 
@@ -1284,8 +1285,8 @@ NSString * const HWMEngineSensorValuesHasBeenUpdatedNotification = @"HWMEngineSe
 
 -(void)insertColorThemes
 {
-    CGFloat defaultOpacity = 0.85;
-    CGFloat darkVibrantOpacity = 0.5;
+    CGFloat defaultOpacity = 0.75;
+    CGFloat darkVibrantOpacity = 0.65;
 
     [self insertColorThemeWithName:@"Default"
                      groupEndColor:[NSColor colorWithCalibratedWhite:0.85 alpha:0.35]
@@ -1747,7 +1748,7 @@ NSString * const HWMEngineSensorValuesHasBeenUpdatedNotification = @"HWMEngineSe
 
                 NSString *type = [NSString stringWithCString:info.dataType encoding:NSASCIIStringEncoding];
 
-                if ([type isEqualToString:@TYPE_CH8]) {
+                if ([type isEqualToString:@SMC_TYPE_CH8]) {
 
                     NSString * caption = [[NSString alloc] initWithBytes:info.bytes length:info.dataSize encoding:NSUTF8StringEncoding];
 
@@ -1766,7 +1767,7 @@ NSString * const HWMEngineSensorValuesHasBeenUpdatedNotification = @"HWMEngineSe
                         }
                     }
                 }
-                else if ([type isEqualToString:@TYPE_FDS]) {
+                else if ([type isEqualToString:@SMC_TYPE_FDS]) {
 
                     FanTypeDescStruct *fds = (FanTypeDescStruct*)info.bytes;
 
@@ -1820,7 +1821,7 @@ NSString * const HWMEngineSensorValuesHasBeenUpdatedNotification = @"HWMEngineSe
                 NSString *type = [NSString stringWithCString:info.dataType encoding:NSASCIIStringEncoding];
                 NSData *value = [NSData dataWithBytes:info.bytes length:info.dataSize];
 
-                if ([type isEqualToString:@TYPE_CH8]) {
+                if ([type isEqualToString:@SMC_TYPE_CH8]) {
 
                     NSString * caption = [[NSString alloc] initWithData:value encoding: NSUTF8StringEncoding];
 
@@ -1840,7 +1841,7 @@ NSString * const HWMEngineSensorValuesHasBeenUpdatedNotification = @"HWMEngineSe
                         }
                     }
                 }
-                else if ([type isEqualToString:@TYPE_FDS]) {
+                else if ([type isEqualToString:@SMC_TYPE_FDS]) {
 
                     FanTypeDescStruct *fds = (FanTypeDescStruct*)[value bytes];
 

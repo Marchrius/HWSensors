@@ -37,6 +37,7 @@
 		7E5CFA2716988EBE00F0E9AD /* i2c_base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E5CFA2316988EBE00F0E9AD /* i2c_base.cpp */; };
 		7E78CD4815EC03BC00D57BC4 /* PTIDSensors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBEC2A115E78B7B00537027 /* PTIDSensors.cpp */; };
 		7E79B82315BA99350079AAE8 /* CPUSensors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E79B82215BA99350079AAE8 /* CPUSensors.cpp */; };
+		7E7E1F691E952749008A0B42 /* FakeSMCSensor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E7E1F671E952749008A0B42 /* FakeSMCSensor.cpp */; };
 		7E9F5454167C71D1006E907B /* RadeonSensors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E9F544F167C71D1006E907B /* RadeonSensors.cpp */; };
 		7E9F548B167C71DA006E907B /* adt7473.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E9F5457167C71D9006E907B /* adt7473.cpp */; };
 		7E9F548C167C71DA006E907B /* f75375.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E9F5458167C71D9006E907B /* f75375.cpp */; };
@@ -68,6 +69,8 @@
 		7EB1366C169C2CE800B42023 /* atom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EB1366A169C2CE700B42023 /* atom.cpp */; };
 		7EBEB1DB17B1754D00C114B5 /* GPUSensors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EBEB1D917B1754D00C114B5 /* GPUSensors.cpp */; };
 		7ECCB63E18537A7000D95FB4 /* cik.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7ECCB63D18537A7000D95FB4 /* cik.cpp */; };
+		7EDFC7581E05A9F3005A6F96 /* gp100.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EDFC7561E05A9F3005A6F96 /* gp100.cpp */; };
+		F6D276032023D87B00D392E1 /* vega.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F6D276022023D87B00D392E1 /* vega.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -157,6 +160,8 @@
 		7E7C5C0017D9964C00D3265A /* CPUSensors-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CPUSensors-Info.plist"; sourceTree = "<group>"; };
 		7E7C5C0217D9966700D3265A /* GPUSensors-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GPUSensors-Info.plist"; sourceTree = "<group>"; };
 		7E7C5C0417D9968D00D3265A /* LPCSensors-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "LPCSensors-Info.plist"; sourceTree = "<group>"; };
+		7E7E1F671E952749008A0B42 /* FakeSMCSensor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FakeSMCSensor.cpp; path = FakeSMCKeyStore/FakeSMCSensor.cpp; sourceTree = SOURCE_ROOT; };
+		7E7E1F681E952749008A0B42 /* FakeSMCSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FakeSMCSensor.h; path = FakeSMCKeyStore/FakeSMCSensor.h; sourceTree = SOURCE_ROOT; };
 		7E9060D41708950500BF5BBF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7E93890015945B450005316D /* FakeSMCDefinitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FakeSMCDefinitions.h; sourceTree = "<group>"; };
 		7E9F544E167C71D1006E907B /* radeon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = radeon.h; sourceTree = "<group>"; };
@@ -228,6 +233,8 @@
 		7EBEC2A215E78B7B00537027 /* PTIDSensors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PTIDSensors.h; sourceTree = "<group>"; };
 		7ECCB63D18537A7000D95FB4 /* cik.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cik.cpp; sourceTree = "<group>"; };
 		7ECCB63F18537A7A00D95FB4 /* cik.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cik.h; sourceTree = "<group>"; };
+		7EDFC7561E05A9F3005A6F96 /* gp100.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gp100.cpp; sourceTree = "<group>"; };
+		7EDFC7571E05A9F3005A6F96 /* gp100.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gp100.h; sourceTree = "<group>"; };
 		7EFF9513182AD44700C637C8 /* FakeSMCKey.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FakeSMCKey.cpp; path = FakeSMCKeyStore/FakeSMCKey.cpp; sourceTree = SOURCE_ROOT; };
 		7EFF9514182AD44700C637C8 /* FakeSMCKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FakeSMCKey.h; path = FakeSMCKeyStore/FakeSMCKey.h; sourceTree = SOURCE_ROOT; };
 		7EFF9515182AD44700C637C8 /* FakeSMCKeyHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FakeSMCKeyHandler.cpp; path = FakeSMCKeyStore/FakeSMCKeyHandler.cpp; sourceTree = SOURCE_ROOT; };
@@ -236,6 +243,8 @@
 		7EFF9518182AD44700C637C8 /* FakeSMCKeyStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FakeSMCKeyStore.h; path = FakeSMCKeyStore/FakeSMCKeyStore.h; sourceTree = SOURCE_ROOT; };
 		7EFF9519182AD44700C637C8 /* FakeSMCKeyStoreUserClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FakeSMCKeyStoreUserClient.cpp; path = FakeSMCKeyStore/FakeSMCKeyStoreUserClient.cpp; sourceTree = SOURCE_ROOT; };
 		7EFF951A182AD44700C637C8 /* FakeSMCKeyStoreUserClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FakeSMCKeyStoreUserClient.h; path = FakeSMCKeyStore/FakeSMCKeyStoreUserClient.h; sourceTree = SOURCE_ROOT; };
+		F6D276012023D76700D392E1 /* vega.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vega.h; sourceTree = "<group>"; };
+		F6D276022023D87B00D392E1 /* vega.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = vega.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -487,6 +496,8 @@
 				7E9F5482167C71D9006E907B /* nve0.cpp */,
 				7E5643C318F0155500E01864 /* gm100.h */,
 				7E5643C118F0154A00E01864 /* gm100.cpp */,
+				7EDFC7571E05A9F3005A6F96 /* gp100.h */,
+				7EDFC7561E05A9F3005A6F96 /* gp100.cpp */,
 			);
 			name = nouveau;
 			sourceTree = "<group>";
@@ -516,6 +527,8 @@
 				7E138D89169A90D3007BE068 /* evergreend.h */,
 				7E0EB893169A9C4D000DF2B1 /* evergreen.h */,
 				7E0EB890169A9A9A000DF2B1 /* evergreen.cpp */,
+				F6D276012023D76700D392E1 /* vega.h */,
+				F6D276022023D87B00D392E1 /* vega.cpp */,
 			);
 			name = radeon;
 			sourceTree = "<group>";
@@ -525,14 +538,16 @@
 			children = (
 				7EB73CF91791BCBC007D93D4 /* OEMInfo.h */,
 				7EB73CF81791BCBC007D93D4 /* OEMInfo.cpp */,
-				7EFF9513182AD44700C637C8 /* FakeSMCKey.cpp */,
 				7EFF9514182AD44700C637C8 /* FakeSMCKey.h */,
+				7EFF9513182AD44700C637C8 /* FakeSMCKey.cpp */,
 				7EFF9516182AD44700C637C8 /* FakeSMCKeyHandler.h */,
 				7EFF9515182AD44700C637C8 /* FakeSMCKeyHandler.cpp */,
 				7EFF9518182AD44700C637C8 /* FakeSMCKeyStore.h */,
 				7EFF9517182AD44700C637C8 /* FakeSMCKeyStore.cpp */,
 				7EFF951A182AD44700C637C8 /* FakeSMCKeyStoreUserClient.h */,
 				7EFF9519182AD44700C637C8 /* FakeSMCKeyStoreUserClient.cpp */,
+				7E7E1F681E952749008A0B42 /* FakeSMCSensor.h */,
+				7E7E1F671E952749008A0B42 /* FakeSMCSensor.cpp */,
 				7E012DAB182D064500D5CD21 /* FakeSMCPlugin.h */,
 				7E012DAA182D064500D5CD21 /* FakeSMCPlugin.cpp */,
 			);
@@ -886,6 +901,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AA172CB150B415200A77CF2 /* FakeSMCDevice.cpp in Sources */,
+				7E7E1F691E952749008A0B42 /* FakeSMCSensor.cpp in Sources */,
 				7E19870B187F480B00BADEA4 /* FakeSMCKeyHandler.cpp in Sources */,
 				7E19870C187F480B00BADEA4 /* FakeSMCKeyStore.cpp in Sources */,
 				7E19870E187F480B00BADEA4 /* FakeSMCPlugin.cpp in Sources */,
@@ -962,6 +978,7 @@
 				7ECCB63E18537A7000D95FB4 /* cik.cpp in Sources */,
 				7E9F54B4167C71DA006E907B /* nvd0.cpp in Sources */,
 				7E9F54B6167C71DA006E907B /* nve0.cpp in Sources */,
+				F6D276032023D87B00D392E1 /* vega.cpp in Sources */,
 				7E9F54B8167C71DA006E907B /* vga.cpp in Sources */,
 				7E9F54BA167C71DA006E907B /* w83781d.cpp in Sources */,
 				7E9F54BB167C71DA006E907B /* w83l785r.cpp in Sources */,
@@ -969,6 +986,7 @@
 				7E9F54C2167C71DF006E907B /* GmaSensors.cpp in Sources */,
 				7E5CFA2516988EBE00F0E9AD /* i2c_algo_bit.cpp in Sources */,
 				7E5CFA2716988EBE00F0E9AD /* i2c_base.cpp in Sources */,
+				7EDFC7581E05A9F3005A6F96 /* gp100.cpp in Sources */,
 				7EB13667169C288000B42023 /* radeon_atombios.cpp in Sources */,
 				7EB1366C169C2CE800B42023 /* atom.cpp in Sources */,
 				7E17E171169C532100E40FC7 /* si.cpp in Sources */,

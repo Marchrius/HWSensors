@@ -43,7 +43,9 @@ enum radeon_int_thermal_type {
 	THERMAL_TYPE_SI,
 	THERMAL_TYPE_EMC2103_WITH_INTERNAL,
 	THERMAL_TYPE_CI,
+	THERMAL_TYPE_PL,
 	THERMAL_TYPE_KV,
+    THERMAL_TYPE_VEGA,
 };
 
 typedef struct {
@@ -60,10 +62,11 @@ typedef struct {
 struct radeon_device {
     IOPCIDevice         *pdev;
     IOMemoryMap         *mmio;
+    volatile UInt8      *mmio_base;
     UInt32              chip_id;
 	UInt16              family;
 	RADEONCardInfo      info;
-	SInt8               card_index;
+	UInt8               card_index;
     
     radeon_int_thermal_type int_thermal_type;
     

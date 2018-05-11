@@ -34,6 +34,7 @@
 #include "FakeSMCKeyStoreUserClient.h"
 
 #include "OEMInfo.h"
+#include "smc.h"
 
 #include <IOKit/IONVRAM.h>
 #include <IOKit/IOLib.h>
@@ -44,36 +45,49 @@ OSDefineMetaClassAndStructors(FakeSMCKeyStore, IOService)
 #pragma mark -
 #pragma mark Key storage engine
 
+void FakeSMCKeyStore::lockAccess()
+{
+    //IORecursiveLockLock(accessLock); 
+}
+
+void FakeSMCKeyStore::unlockAccess()
+{
+    //IORecursiveLockUnlock(accessLock);
+}
+
 UInt32 FakeSMCKeyStore::getCount()
 {
-    return keys->getCount();
+    lockAccess();
+    UInt32 count = keys->getCount();
+    unlockAccess();
+    return count;
 }
 
 void FakeSMCKeyStore::updateKeyCounterKey()
 {
+    lockAccess();
+    
 	UInt32 count = OSSwapHostToBigInt32(keys->getCount());
-
-	//char value[] = { static_cast<char>(count << 24), static_cast<char>(count << 16), static_cast<char>(count << 8), static_cast<char>(count) };
-
-    //KEYSLOCK;
 	keyCounterKey->setValueFromBuffer(&count, 4);
-    //KEYSUNLOCK;
+    
+    unlockAccess();
 }
 
 void FakeSMCKeyStore::updateFanCounterKey()
 {
+    lockAccess();
+    
 	UInt8 count = 0;
 
     for (UInt8 i = 0; i <= 0xf; i++) {
-        if (bit_get(vacantFanIndex, BIT(i))) {
+        if (bit_get(vacantFanIndex, BIT(i)) != 0) {
             count = i + 1;
         }
     }
 
-    //addKeyWithValue(KEY_FAN_NUMBER, TYPE_UI8, TYPE_UI8_SIZE, &count);
-    //KEYSLOCK;
 	fanCounterKey->setValueFromBuffer(&count, 1);
-    //KEYSUNLOCK;
+    
+    unlockAccess();
 }
 
 FakeSMCKey *FakeSMCKeyStore::addKeyWithValue(const char *name, const char *type, unsigned char size, const void *value)
@@ -85,7 +99,9 @@ FakeSMCKey *FakeSMCKeyStore::addKeyWithValue(const char *name, const char *type,
 //        }
 
         if (value) {
+            lockAccess();
             key->setValueFromBuffer(value, size);
+            unlockAccess();
         }
 
         if (kHWSensorsDebug) {
@@ -148,10 +164,10 @@ FakeSMCKey *FakeSMCKeyStore::addKeyWithValue(const char *name, const char *type,
     if (!type) wellKnownType = OSDynamicCast(OSString, types->getObject(name));
 
 	if (FakeSMCKey *key = FakeSMCKey::withValue(name, type ? type : wellKnownType ? wellKnownType->getCStringNoCopy() : 0, size, value)) {
-        //KEYSLOCK;
+        lockAccess();
 		keys->setObject(key);
-        //KEYSUNLOCK;
 		updateKeyCounterKey();
+        unlockAccess();
 		return key;
 	}
 
@@ -184,10 +200,10 @@ FakeSMCKey *FakeSMCKeyStore::addKeyWithHandler(const char *name, const char *typ
 	HWSensorsDebugLog("adding key %s with handler, type: %s, size: %d", name, type, size);
 
 	if (FakeSMCKey *key = FakeSMCKey::withHandler(name, type, size, handler)) {
-        //KEYSLOCK;
+        lockAccess();
 		keys->setObject(key);
-        //KEYSUNLOCK;
-		updateKeyCounterKey();
+        updateKeyCounterKey();
+        unlockAccess();
 		return key;
 	}
 
@@ -198,9 +214,9 @@ FakeSMCKey *FakeSMCKeyStore::addKeyWithHandler(const char *name, const char *typ
 
 FakeSMCKey *FakeSMCKeyStore::getKey(const char *name)
 {
-    //KEYSLOCK;
+    lockAccess();
     OSCollection *snapshotKeys = keys->copyCollection();
-    //KEYSUNLOCK;
+    unlockAccess();
 
     if (OSCollectionIterator *iterator = OSCollectionIterator::withCollection(snapshotKeys)) {
 
@@ -211,16 +227,16 @@ FakeSMCKey *FakeSMCKeyStore::getKey(const char *name)
             UInt32 key1 = HWSensorsKeyToInt(&validKeyNameBuffer);
 			UInt32 key2 = HWSensorsKeyToInt(key->getKey());
 			if (key1 == key2) {
-				OSSafeRelease(iterator);
-                OSSafeRelease(snapshotKeys);
+				OSSafeReleaseNULL(iterator);
+                OSSafeReleaseNULL(snapshotKeys);
 				return key;
 			}
 		}
 
-        OSSafeRelease(iterator);
+        OSSafeReleaseNULL(iterator);
 	}
 
-    OSSafeRelease(snapshotKeys);
+    OSSafeReleaseNULL(snapshotKeys);
 
  	HWSensorsDebugLog("key %s not found", name);
 
@@ -229,9 +245,9 @@ FakeSMCKey *FakeSMCKeyStore::getKey(const char *name)
 
 FakeSMCKey *FakeSMCKeyStore::getKey(unsigned int index)
 {
-    //KEYSLOCK;
+    lockAccess();
     FakeSMCKey *key = OSDynamicCast(FakeSMCKey, keys->getObject(index));
-    //KEYSUNLOCK;
+    unlockAccess();
 
 	if (!key) HWSensorsDebugLog("key with index %d not found", index);
 
@@ -240,7 +256,11 @@ FakeSMCKey *FakeSMCKeyStore::getKey(unsigned int index)
 
 OSArray *FakeSMCKeyStore::getKeys()
 {
-    return keys;
+    lockAccess();
+    OSArray *snapshotKeys = OSDynamicCast(OSArray, keys->copyCollection());
+    unlockAccess();
+    
+    return snapshotKeys;
 }
 
 UInt32 FakeSMCKeyStore::addKeysFromDictionary(OSDictionary* dictionary)
@@ -261,13 +281,13 @@ UInt32 FakeSMCKeyStore::addKeysFromDictionary(OSDictionary* dictionary)
                             keysAdded++;
                         }
 
-                        OSSafeRelease(aiterator);
+                        OSSafeReleaseNULL(aiterator);
                     }
                 }
                 key = 0;
             }
             
-            OSSafeRelease(iterator);
+            OSSafeReleaseNULL(iterator);
         }
     }
 
@@ -285,57 +305,88 @@ UInt32 FakeSMCKeyStore::addWellKnownTypesFromDictionary(OSDictionary* dictionary
                 typesCount++;
             }
         }
-        OSSafeRelease(iterator);
+        OSSafeReleaseNULL(iterator);
     }
 
     return typesCount;
 }
 
-SInt8 FakeSMCKeyStore::takeVacantGPUIndex()
+/**
+ Reserving next available GPU index
+
+ @return Reserved index or UINT8_MAX if not available
+ */
+UInt8 FakeSMCKeyStore::takeVacantGPUIndex()
 {
+    lockAccess();
+    
     for (UInt8 i = 0; i <= 0xf; i++) {
-        if (!bit_get(vacantGPUIndex, BIT(i))) {
+        if (bit_get(vacantGPUIndex, BIT(i)) == 0) {
             bit_set(vacantGPUIndex, BIT(i));
+            unlockAccess();
             return i;
         }
     }
 
-    return -1;
+    unlockAccess();
+    
+    return UINT8_MAX;
 }
 
 bool FakeSMCKeyStore::takeGPUIndex(UInt8 index)
 {
-    if (index < 0xf && !bit_get(vacantGPUIndex, BIT(index))) {
+    lockAccess();
+    
+    if (index <= 0xf && bit_get(vacantGPUIndex, BIT(index)) == 0) {
         bit_set(vacantGPUIndex, BIT(index));
+        unlockAccess();
         return true;
     }
 
+    unlockAccess();
+    
     return false;
 }
 
 void FakeSMCKeyStore::releaseGPUIndex(UInt8 index)
 {
-    if (index <= 0xf)
+    if (index <= 0xf) {
+        lockAccess();
         bit_clear(vacantGPUIndex, BIT(index));
+        unlockAccess();
+    }
 }
 
-SInt8 FakeSMCKeyStore::takeVacantFanIndex(void)
+/**
+ Reserve next vacant FAN index
+
+ @return Reserved index or UINT8_MAX if not available
+ */
+UInt8 FakeSMCKeyStore::takeVacantFanIndex(void)
 {
+    lockAccess();
+    
     for (UInt8 i = 0; i <= 0xf; i++) {
-        if (!bit_get(vacantFanIndex, BIT(i))) {
+        if (bit_get(vacantFanIndex, BIT(i)) == 0) {
             bit_set(vacantFanIndex, BIT(i));
             updateFanCounterKey();
+            unlockAccess();
             return i;
         }
     }
+    
+    unlockAccess();
 
-    return -1;
+    return UINT8_MAX;
 }
 
 void FakeSMCKeyStore::releaseFanIndex(UInt8 index)
 {
-    if (index <= 0xf)
+    if (index <= 0xf) {
+        lockAccess();
         bit_clear(vacantFanIndex, BIT(index));
+        unlockAccess();
+    }
 }
 
 #pragma mark -
@@ -358,8 +409,8 @@ void FakeSMCKeyStore::saveKeyToNVRAM(FakeSMCKey *key)
         else
             nvram->setProperty(tempName, OSData::withBytes(key->getValue(), key->getSize()));
 
-        OSSafeRelease(tempName);
-        OSSafeRelease(nvram);
+        OSSafeReleaseNULL(tempName);
+        OSSafeReleaseNULL(nvram);
     }
 }
 
@@ -403,21 +454,21 @@ UInt32 FakeSMCKeyStore::loadKeysFromNVRAM()
                             }
                         }
                         
-                        OSSafeRelease(iterator);
+                        OSSafeReleaseNULL(iterator);
                     }
                     
-                    OSSafeRelease(props);
+                    OSSafeReleaseNULL(props);
                 }
             }
             
-            OSSafeRelease(s);
-            OSSafeRelease(nvram);
+            OSSafeReleaseNULL(s);
+            OSSafeReleaseNULL(nvram);
         }
         else {
             HWSensorsWarningLog("NVRAM is unavailable");
         }
 
-        OSSafeRelease(matching);
+        OSSafeReleaseNULL(matching);
     }
     
     return count;
@@ -447,12 +498,14 @@ bool FakeSMCKeyStore::init(OSDictionary *properties)
 	if (!super::init(properties))
 		return false;
 
+    accessLock = IORecursiveLockAlloc();
+    
 	keys = OSArray::withCapacity(2);
     types = OSDictionary::withCapacity(0);
 
-    keyCounterKey = FakeSMCKey::withValue(KEY_COUNTER, TYPE_UI32, TYPE_UI32_SIZE, "\0\0\0\1");
+    keyCounterKey = FakeSMCKey::withValue(KEY_COUNTER, SMC_TYPE_UI32, SMC_TYPE_UI32_SIZE, "\0\0\0\1");
     keys->setObject(keyCounterKey);
-    fanCounterKey = FakeSMCKey::withValue(KEY_FAN_NUMBER, TYPE_UI8, TYPE_UI8_SIZE, "\0");
+    fanCounterKey = FakeSMCKey::withValue(KEY_FAN_NUMBER, SMC_TYPE_UI8, SMC_TYPE_UI8_SIZE, "\0");
     keys->setObject(fanCounterKey);
 
 	return true;
@@ -492,11 +545,11 @@ bool FakeSMCKeyStore::start(IOService *provider)
     }
 
     if (OSString *manufacturer = OSDynamicCast(OSString, getProperty(kOEMInfoManufacturer)) ) {
-        this->addKeyWithValue("HWS0", TYPE_CH8, manufacturer->getLength(), manufacturer->getCStringNoCopy());
+        this->addKeyWithValue("HWS0", SMC_TYPE_CH8, manufacturer->getLength(), manufacturer->getCStringNoCopy());
     }
 
     if (OSString *product = OSDynamicCast(OSString, getProperty(kOEMInfoProduct)) ) {
-        this->addKeyWithValue("HWS1", TYPE_CH8, product->getLength(), product->getCStringNoCopy());
+        this->addKeyWithValue("HWS1", SMC_TYPE_CH8, product->getLength(), product->getCStringNoCopy());
     }
 
     IOService::publishResource(kFakeSMCKeyStoreService, this);
@@ -510,8 +563,10 @@ bool FakeSMCKeyStore::start(IOService *provider)
 
 void FakeSMCKeyStore::free()
 {
-    OSSafeRelease(keys);
-    OSSafeRelease(types);
+    IORecursiveLockFree(accessLock);
+    
+    OSSafeReleaseNULL(keys);
+    OSSafeReleaseNULL(types);
 
     super::free();
 }
@@ -608,7 +663,7 @@ IOReturn FakeSMCKeyStore::newUserClient(task_t owningTask, void *security_id, UI
                         key->setHandler(NULL);
                 }
                 result = kIOReturnSuccess;
-                OSSafeRelease(iterator);
+                OSSafeReleaseNULL(iterator);
             }
         }
     }

@@ -59,6 +59,10 @@ bool gm100_identify(struct nouveau_device *device)
         case 0x126:
             device->cname = "GM206"; // GTX 960
             break;
+            
+//        case 0x12b:
+//            device->cname = "GM20B"; // GTX 980 Ti?
+//            break;
 
         default:
             nv_fatal(device, "unknown Maxwell chipset 0x%x\n", device->chipset);
@@ -87,5 +91,6 @@ void gm100_init(struct nouveau_device *device)
     //device->voltage_get = nouveau_voltage_get;
     device->pwm_get = gm107_fan_pwm_get;
     device->fan_pwm_get = nouveau_therm_fan_pwm_get;
+    device->fan_init = nva3_therm_init;
     device->fan_rpm_get = nva3_therm_fan_sense;
 }
